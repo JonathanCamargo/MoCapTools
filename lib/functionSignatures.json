@@ -1,0 +1,20 @@
+{
+
+    "matchFiles":
+    {
+        "inputs": 
+        [{
+            "name":"filepart",
+            "kind":"required",
+            "type":[["char"], ["hierarchy=matlab.internal.language.introspective.tabcompletion.fullfile_vfileparttail(filepart)"]],
+            "repeating":true
+        }]
+    }
+,"writeFunctionSignatureJSON":
+{
+"inputs":
+[
+{"name":"file","kind":"required","type":"file=*.m","repeating":false}
+]
+}
+}

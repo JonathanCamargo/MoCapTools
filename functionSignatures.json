@@ -1,0 +1,352 @@
+{
+    "Osim.model.getSegmentMarkers":
+    {
+        "inputs": 
+        [
+            {"name":"osimModelFile","kind":"required","type":"file=*.osim"}
+        ]
+    },
+    "Osim.createExternalLoads":
+    {
+        "inputs": 
+        [
+            {"name":"devices","kind":"required","type":"cell"},
+            {"name":"sides", "kind":"required", "type":"char"},
+            {"name":"extLoadsFileName","kind":"ordered","type":"file=*.xml"}
+        ]
+    },
+    "Osim.editSetupXML":
+    {
+        "inputs": 
+        [
+            {"name":"xmlFile","kind":"required","type":"file=*.xml"},
+            {"name":"varargin", "kind":"ordered", "repeating":true, "tuple":[
+                {"name":"tag", "type":"choices=Osim.getTags(xmlFile)"},
+                {"name":"value", "type":"char"}
+            ]},
+            {"name":"FilePath","kind":"namevalue","type":"file=*.xml"}
+        ]
+    },
+    "Osim.readTagFromXML":
+    {
+        "inputs": 
+        [
+            {"name":"xml","kind":"required","type":"file=*.xml"},            
+            {"name":"tag", "type":"choices=Osim.getTags(xml)"}
+        ]
+    },
+    "Osim.FK":
+    {
+        "inputs": 
+        [
+            {"mutuallyExclusiveGroup":
+            [
+                [
+                    {"name":"processedMotFilename","kind":"required","type":[["file=*.mot"], ["file=*.mat"]]}
+                ],
+                [
+                    {"name":"processedMotFilename","kind":"required","type":"table"}
+                ]
+            ]
+            },            
+            {"name":"osimFilePath","kind":"required","type":"file=*.osim"},
+            {"name":"OutputType","kind":"namevalue","type":"choices={'H', 'loc_rot', 'Markers'}"},
+            {"name":"Transform","kind":"namevalue","type":"ismatrix"}
+        ]
+    },
+    "Osim.getTags":
+    {
+        "inputs": 
+        [
+            {"name":"xmlFile","kind":"required","type":"file=*.xml"}
+        ]
+    },
+    "Osim.ID":
+    {
+        "inputs": 
+        [
+            {"mutuallyExclusiveGroup":
+            [
+                [
+                    {"name":"GRFMotFile","kind":"required","type":[["file=*.mot"], ["file=*.mat"]]}
+                ],
+                [
+                    {"name":"GRFMotFile","kind":"required","type":"table"}
+                ]
+            ]
+            },
+            {"name":"IDTemplateFile","kind":"required","type":"file=*.xml"},
+            {"mutuallyExclusiveGroup":
+            [
+                [
+                    {"name":"IKMotFile","kind":"required","type":[["file=*.mot"], ["file=*.mat"]]}
+                ],
+                [
+                    {"name":"IKMotFile","kind":"required","type":"table"}
+                ]
+            ]
+            },
+            {"name":"stoOutputFile","kind":"ordered","type":"file=*.sto"}
+        ]
+    },
+    "Osim.IK":
+    {
+        "inputs": 
+        [
+            {"mutuallyExclusiveGroup":
+            [
+                [
+                    {"name":"processedTrcFileName","kind":"required","type":[["file=*.trc"], ["file=*.mat"]]}
+                ],
+                [
+                    {"name":"processedTrcFileName","kind":"required","type":[["table"], ["struct"]]}
+                ]
+            ]
+            },
+            {"name":"IKTemplateFile","kind":"required","type":"file=*.xml"},
+            {"name":"motOutputFile","kind":"ordered","type":"file=*.mot"}
+        ]
+    },
+    "Osim.interpret":
+    {
+        "inputs": 
+        [
+            {"mutuallyExclusiveGroup":
+            [
+                [
+                    {"name":"data","kind":"required","type":[["file=*.trc"], ["file=*.mat"], ["file=*.mot"], ["file=*.sto"]]}
+                ],
+                [
+                    {"name":"data","kind":"required","type":[["table"], ["struct"]]}
+                ]
+            ]
+            },
+            {"name":"filetype","kind":"required","type":"choices={'TRC', 'MOT', 'STO'}"},
+            {"name":"outputType","kind":"ordered","type":"choices={'table', 'file', 'struct'}"}
+        ]
+    },
+    "Osim.markers2TRC":
+    {
+        "inputs": 
+        [
+            {"name":"markerStruct","kind":"required","type":"struct"},
+            {"name":"FilePath","kind":"namevalue","type":"file=*.trc"},
+            {"name":"FilterFreq","kind":"namevalue","type":"numeric"}
+        ]
+    },
+    "Osim.readMOT":
+    {
+        "inputs":
+        [
+            {"name":"motFile","kind":"required","type":"file=*.mot"}
+        ]
+    },
+    "Osim.readSTO":
+    {
+        "inputs": 
+        [
+            {"name":"stoFile","kind":"required","type":"file=*.sto"}
+        ]
+    },
+    "Osim.readTRC":
+    {
+        "inputs":
+        [
+            {"name":"trcFile","kind":"required","type":"file=*.trc"}
+        ]
+    },
+    "Osim.Scale":
+    {
+        "inputs": 
+        [
+            {"mutuallyExclusiveGroup":
+            [
+                [
+                    {"name":"processedStaticTRCFilename","kind":"required","type":[["file=*.trc"], ["file=*.mat"], ["table"]]}
+                ],
+                [
+                    {"name":"processedStaticTRCFilename","kind":"required","type":"table"}
+                ]
+            ]
+            },
+            {"name":"scaleTemplateFile","kind":"required","type":"file=*.xml"},
+            {"name":"outputOsimFile","kind":"ordered","type":"file=*.osim"}
+        ]
+    },
+    "Osim.writeMOT":
+    {
+        "inputs": 
+        [
+            {"name":"motTable","kind":"required","type":"table"},
+            {"name":"FilePath","kind":"namevalue","type":"file=*.mot"},
+            {"name":"DeviceNames","kind":"namevalue","type":"cell"}
+        ]
+    },
+    "Osim.writeTRC":
+    {
+        "inputs": 
+        [
+            {"name":"trcTable","kind":"required","type":"table"},
+            {"name":"FilePath","kind":"namevalue","type":"file=*.trc"},
+            {"name":"FilterFreq","kind":"namevalue","type":"numeric"}
+        ]
+    },
+    "Osim.writeSTO":
+    {
+        "inputs": 
+        [
+            {"name":"stoTable","kind":"required","type":"table"},
+            {"name":"FilePath","kind":"namevalue","type":"file=*.sto"}
+        ]
+    },
+
+
+
+    "sf2018.ExportAnalog":
+    {
+        "inputs": 
+        [
+            {"name":"c3dFile","kind":"required","type":"file=*.c3d"},
+            {"name":"outputDir","kind":"required","type":"folder"}
+        ]
+    },
+    "sf2018.ExportRos":
+    {
+        "inputs": 
+        [
+            {"name":"bagFile","kind":"required","type":"file=*.bag"},
+            {"name":"outputDir","kind":"required","type":"folder"}
+        ]
+    },
+    "sf2018.label_LG":
+    {
+        "inputs":
+        [
+            {"name":"file","kind":"required","type":"file=*.mat"},
+            {"name":"generateFSR","kind":"required","type":["logical", "scalar"]},
+            {"name":"toPlot","kind":"required","type":["logical", "scalar"]}
+        ]
+    },
+    "sf2018.label_TP":
+    {
+        "inputs":
+        [
+            {"name":"file","kind":"required","type":"file=*.mat"},
+            {"name":"Plot","kind":"ordered","type":["logical", "scalar"]}
+        ]
+    },
+
+
+
+    "Vicon.C3DtoBER":
+    {
+        "inputs":
+        [
+            {"name":"c3dFile","kind":"required","type":"file=*.c3d"}
+        ]
+    },
+    "Vicon.C3DtoBIO":
+    {
+        "inputs":
+        [
+            {"name":"c3dFile","kind":"required","type":"file=*.c3d"}
+        ]
+    },
+    "Vicon.C3DtoMOT":
+    {
+        "inputs":
+        [
+            {"name":"c3dFile","kind":"required","type":"file=*.c3d"},
+            {"name":"FilterFreq","kind":"namevalue","type":"numeric"},
+            {"name":"CombinedForceplates","kind":"namevalue","type":"numeric"},
+            {"name":"DeviceNames","kind":"namevalue","type":"cell"}
+        ]
+    },
+    "Vicon.C3DtoSYNC":
+    {
+        "inputs":
+        [
+            {"name":"c3dFile","kind":"required","type":"file=*.c3d"}
+        ]
+    },
+    "Vicon.C3DtoTRC":
+    {
+        "inputs":
+        [
+            {"name":"c3dFile","kind":"required","type":"file=*.c3d"}
+        ]
+    },
+    "Vicon.ExtractMarkers":
+    {
+        "inputs":
+        [
+            {"name":"c3dFile","kind":"required","type":"file=*.c3d"}
+        ]
+    },
+    "Vicon.GapFill":
+    {
+        "inputs":
+        [
+            {"name":"markerData", "kind":"required", "type":"struct"},
+            {"name":"osimModel","kind":"required","type":"file=*.osim"},
+            {"name":"VerboseLevel","kind":"namevalue","type":"numeric"}
+        ]
+    },
+    "Vicon.GapMake":
+    {
+        "inputs":
+        [
+            {"name":"markerData", "kind":"required", "type":"struct"},
+            {"name":"ikXml","kind":"required","type":"file=*.xml"},
+            {"name":"VerboseLevel","kind":"namevalue","type":"numeric"},
+            {"name":"ErrorThresholdLow","kind":"namevalue","type":"numeric"},
+            {"name":"ErrorThresholdHigh","kind":"namevalue","type":"numeric"}
+        ]
+    },
+    "Vicon.gen2table":
+    {
+        "inputs":
+        [
+            {"name":"file","kind":"required","type":"file"}
+        ]
+    },
+    "Vicon.IterativeGapFilling":
+    {
+        "inputs":
+        [
+            {"name":"filesToParse", "kind":"required", "type":"file=*.c3d"},
+            {"name":"ikXml","kind":"required","type":"file=*.xml"},
+            {"name":"VerboseLevel","kind":"namevalue","type":"choices={0, 1, 2}"},
+            {"name":"ErrorThresholdLow","kind":"namevalue","type":"numeric"},
+            {"name":"ErrorThresholdHigh","kind":"namevalue","type":"numeric"},
+            {"name":"OutputDir","kind":"namevalue","type":[["char"], ["folder"]]},
+            {"name":"MaxIterations","kind":"namevalue","type":"numeric"}
+        ]
+    },
+    "Vicon.markers2C3D":
+    {
+        "inputs": 
+        [
+            {"name":"markerStruct","kind":"required","type":"struct"},
+            {"name":"c3dFileOrig","kind":"required","type":"file=*.c3d"},
+            {"name":"c3dFileOut","kind":"ordered","type":"file=*.c3d"}
+        ]
+    },
+    "Vicon.transform":
+    {
+        "inputs": 
+        [
+            {"name":"arraydata","kind":"required","type":["numeric", "@(x) round(size(x, 2)/3) == (size(x, 2)/3)"]},
+            {"name":"format","kind":"ordered","type":"choices={'OsimXYZ', 'ViconXYZ'}"}
+        ]
+    },
+    "Vicon.TRCtoC3D":
+    {
+        "inputs": 
+        [
+            {"name":"markerTable","kind":"required","type":"table"},
+            {"name":"c3dFileOrig","kind":"required","type":"file=*.c3d"},
+            {"name":"c3dFileOut","kind":"ordered","type":"file=*.c3d"}
+        ]
+    }
+}

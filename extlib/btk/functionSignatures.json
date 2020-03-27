@@ -1,0 +1,9 @@
+{
+    "btkReadAcquisition":
+    {
+    "inputs":
+    [
+        {"name":"file","kind":"required","type":"file=*.c3d","repeating":false}
+    ]
+    }
+}
