@@ -1,8 +1,9 @@
-﻿# Automated Gap Filling and Tools for motion capture by Sensor-Fusion team @EPIC lab
+﻿# Automated Gap Filling and Tools for motion capture by Sensor-Fusion team from EPIC lab @GeorgiaTech
 ### Purpose of this repo
 This repository is a the central location for different tools to ease the MoCap analysis, including programmatically running OpenSim, and automatically gap-filling of data.
 ## Setting up this repo
 In order to properly set up this repo, please make sure you have OpenSim downloaded and installed (http://simtk.org/frs/index.php?group_id=91), then run install.m to bind OpenSim to MATLAB, and to add this repo to your MATLAB path. For examples on how to use different functions in this repo, see +Osim/examples/example.m and +Vicon/examples/example.m
+
 ### Purpose of the Sensor-Fusion subteam
 Our team is part of the EPIC lab at Georgia Institute of Technology (www.epic.gatech.edu) focuses on instrumentation with wearable sensors, including IMU, goniometers, pressure sensors and a novel epidermal flexible emg.  We are interested in analyzing the information carried by these sensors to develop intent recognition algorithms and gait state estimation using machine learning techniques. During Fall, we are setting up a full data collection system including motion capture and force plates in our terrain park that includes ramps, stairs and ground level walking. This will allow to study the biomechanics of ambulation for different conditions and get a better background for the development of controllers for our assistive devices.
 
