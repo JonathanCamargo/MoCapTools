@@ -1,4 +1,4 @@
-﻿# Automated Gap Filling and Tools for motion capture by Sensor-Fusion team from EPIC lab @GeorgiaTech
+﻿# Automated Gap Filling and Tools for Motion Capture by the Sensor-Fusion team from EPIC lab @GeorgiaTech
 ### Purpose of this repo
 This repository is a the central location for different tools to ease the MoCap analysis, including programmatically running OpenSim, and automatically gap-filling of data.
 ## Setting up this repo
