@@ -1,14 +1,17 @@
-function [JointTorquesTable, stoOutputFile]=ID(GRFMotData,IDTemplateFile,IKMotData,stoOutputFile)
+function [JointTorquesTable, stoOutputFile]=ID(GRFMotFile,IDTemplateFile,IKMotFile,stoOutputFile)
 % Osim.ID computes the inverse Dynamics from forceplate data given by
-% GRFMotFile, an IDTemplateFile (in xml format), and IKMotFile which is a
+% GRFdata, an IDTemplateFile (in xml format), and IKdata which is a
 % Joint Kinematics file obtained from Osim.IK. The output will be written
 % to stoOutputFile if it is provided. If there is no time range provided in
 % the xml, it will be set to the length of the entire trial by default.
 % Otherwise, it will be left untouched. 
 % 
-% [JointTorquesTable, stoOutputFile]=Osim.ID(GRFMotFile,IDTemplateFile,IKMotFile,stoOutputFile)
-% [JointTorquesTable, stoOutputFile]=Osim.ID(GRFMotFile,IDTemplateFile,IKMotFile)
-% 
+% [JointTorquesTable, stoOutputFile]=Osim.ID(GRFdata,IDTemplateFile,IKdata,stoOutputFile)
+% [JointTorquesTable, stoOutputFile]=Osim.ID(GRFdata,IDTemplateFile,IKdata)
+% GRFdata can be a path to a .mot file, a path to a .mat file, or a table
+% of force plate data. 
+% IKdata can be a path to a .mot file, a path to a .mat file, or a table
+% of IK data. It does not have to be the same type as GRFdata.
 % Returns:
 % JointTorquesTable
 % stoOutputFile: a path to the file created by OpenSim
@@ -18,9 +21,9 @@ function [JointTorquesTable, stoOutputFile]=ID(GRFMotData,IDTemplateFile,IKMotDa
     import org.opensim.modeling.*
     narginchk(3,4);
     
-    GRFMotData = Osim.interpret(GRFMotData, 'MOT', 'file');
-    IKMotFile = Osim.interpret(IKMotData, 'MOT', 'file');
-    IKMotData = Osim.interpret(IKMotData, 'MOT', 'table');
+    GRFMotFile = Osim.interpret(GRFMotFile, 'MOT', 'file');
+    IKMotFile = Osim.interpret(IKMotFile, 'MOT', 'file');
+    IKMotData = Osim.interpret(IKMotFile, 'MOT', 'table');
     timeString = validateTimeRange(IDTemplateFile, IKMotData);
     
     %% Create Inverse Dynamics Setup File
@@ -49,7 +52,7 @@ function [JointTorquesTable, stoOutputFile]=ID(GRFMotData,IDTemplateFile,IKMotDa
     end
     % Copy and edit the external loads file to change the mot file it points to.
     externalLoadsDoc=xmlread(externalLoadsTemplatePath);
-    fullGRFMotFile=GetFullPath(GRFMotData);
+    fullGRFMotFile=GetFullPath(GRFMotFile);
     if ~exist(fullGRFMotFile,'file')
         error('Force plate mot file not found at %s',fullGRFMotFile);
     end

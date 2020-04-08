@@ -1,17 +1,17 @@
-function [jointAngleTable,errorTable,motOutputFile] = IK(trcData, IKTemplateFile, motOutputFile)
+function [jointAngleTable,errorTable,motOutputFile] = IK(processedTrcFileName, IKTemplateFile, motOutputFile)
 % Osim.IK computes the Inverse Kinematics from a marker file given by
-% trcData and an IKTemplateFile (in xml format). The results from
+% trcFilename and an IKTemplateFile (in xml format). The results from
 % OpenSim are written to motOutputFile, if it is provided. If it is it not
 % provided, the output will be written to a random temporary file. If there
 % is no time range provided in the xml, it will be set to the length of the
-% entire trial by default. Otherwise, it will be left untouched. trcData
-% can be a file, struct, or table.
+% entire trial by default. Otherwise, it will be left untouched. 
 % 
 % Files should be OpenSim compatible (i.e. you should be able to run
 % OpenSim using the same files used here).
 % 
-% [jointAngleTable, errorTable, motOutputFile] = Osim.IK(trcData, IKTemplateFile, optionalMotOutputFile);
-% [jointAngleTable, errorTable, motOutputFile] = Osim.IK(trcData, IKTemplateFile);
+% [jointAngleTable, errorTable, motOutputFile] = Osim.IK(TRCdata, IKTemplateFile, optionalMotOutputFile);
+% [jointAngleTable, errorTable, motOutputFile] = Osim.IK(TRCdata, IKTemplateFile);
+% 
 % 
 % Returns:
 % jointAngleTable - A table containing joint angles over time. 
@@ -30,14 +30,13 @@ function [jointAngleTable,errorTable,motOutputFile] = IK(trcData, IKTemplateFile
     %% Create Inverse Kinematics Setup File
     ikSetupData=xmlread(IKTemplateFile);
     
-    trcFile = Osim.interpret(trcData, 'TRC', 'file');
-    trcTable = Osim.interpret(trcData, 'TRC', 'table');
-    
+    processedTrc = Osim.interpret(processedTrcFileName, 'TRC', 'file');
+    trcTable = Osim.interpret(processedTrcFileName, 'TRC', 'table');
     timeString = validateTimeRange(IKTemplateFile, trcTable);
     replaceElementValue(ikSetupData, 'time_range', timeString);
     
     %Modify marker_file entries
-    replaceElementValue(ikSetupData, 'marker_file', trcFile);
+    replaceElementValue(ikSetupData, 'marker_file', processedTrc);
 
     %Modify output_motion_file entries
     if ~exist('motOutputFile', 'var')

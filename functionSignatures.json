@@ -1,4 +1,6 @@
 {
+
+
     "Osim.model.getSegmentMarkers":
     {
         "inputs": 
@@ -122,7 +124,7 @@
             ]
             },
             {"name":"filetype","kind":"required","type":"choices={'TRC', 'MOT', 'STO'}"},
-            {"name":"outputType","kind":"ordered","type":"choices={'table', 'file', 'struct'}"}
+            {"name":"outputType","kind":"ordered","type":"choices={'table', 'struct', 'file'}"}
         ]
     },
     "Osim.markers2TRC":
@@ -310,20 +312,7 @@
             {"name":"file","kind":"required","type":"file"}
         ]
     },
-    "Vicon.IterativeGapFilling":
-    {
-        "inputs":
-        [
-            {"name":"filesToParse", "kind":"required", "type":"file=*.c3d"},
-            {"name":"ikXml","kind":"required","type":"file=*.xml"},
-            {"name":"VerboseLevel","kind":"namevalue","type":"choices={0, 1, 2}"},
-            {"name":"ErrorThresholdLow","kind":"namevalue","type":"numeric"},
-            {"name":"ErrorThresholdHigh","kind":"namevalue","type":"numeric"},
-            {"name":"OutputDir","kind":"namevalue","type":[["char"], ["folder"]]},
-            {"name":"MaxIterations","kind":"namevalue","type":"numeric"}
-        ]
-    },
-    "Vicon.markers2C3D":
+    "Vicon.markerstoC3D":
     {
         "inputs": 
         [
@@ -347,6 +336,24 @@
             {"name":"markerTable","kind":"required","type":"table"},
             {"name":"c3dFileOrig","kind":"required","type":"file=*.c3d"},
             {"name":"c3dFileOut","kind":"ordered","type":"file=*.c3d"}
+        ]
+    },
+    "Vicon.IterativeGapFilling":
+    {
+        "inputs":
+        [
+            {"name":"c3dFile","kind":"required","type":"@(~)true","repeating":false},
+            {"name":"VerboseLevel","kind":"namevalue","type":"@(~)true","repeating":false},
+            {"name":"CleanLabels","kind":"namevalue","type":"@(~)true","repeating":false},
+            {"name":"FillGaps","kind":"namevalue","type":"@(~)true","repeating":false},
+            {"name":"MakeGaps","kind":"namevalue","type":"@(~)true","repeating":false},
+            {"name":"LabelingMaxIterations","kind":"namevalue","type":"@(~)true","repeating":false},
+            {"name":"IkXml","kind":"namevalue","type":"@(~)true","repeating":false},
+            {"name":"OsimFile","kind":"namevalue","type":"@(~)true","repeating":false},
+            {"name":"ErrorThresholdLow","kind":"namevalue","type":"@(~)true","repeating":false},
+            {"name":"ErrorThresholdHigh","kind":"namevalue","type":"@(~)true","repeating":false},
+            {"name":"MaxIterations","kind":"namevalue","type":"@(~)true","repeating":false},
+            {"name":"AbortOnHighError","kind":"namevalue","type":"@(~)true","repeating":false}
         ]
     }
 }

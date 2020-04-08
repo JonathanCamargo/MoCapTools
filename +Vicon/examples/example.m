@@ -1,4 +1,4 @@
-%% Example script detailing how Vicon functions can be used 
+%% Example script detailing how Vicon and C3D functions can be used 
 
 %% User starts with:
 % static.c3d
@@ -33,39 +33,25 @@ errorThresholdHigh = 0.06;
 
 mkdir(outputDir);
 %% Set up the static trial so that we can use a scaled model for IK 
-% This repo uses a few different formats for handling marker position data:
-% - A struct where each field is a marker, and the data is an nx3 double
-% array of x,y,z coordinates, with n = number of frames. 
-% - A table with 3*m+1 columns, with m = number of markers. Each column is
-% a specific marker coordinate, and the first column is time in seconds. 
-% - A *.trc ASCII file used for OpenSim, structured similarly to the table,
-% with another column for the frame. 
-% - A *.mat binary file with either the struct or the table saved as the
-% only variable in it. 
-% For ease of use, any of these formats can be inputted into any function
-% that takes marker data, and it will be automatically converted to the
-% most appropriate form through the function Osim.interpret. 
-staticMarkerData = Vicon.ExtractMarkers(staticC3D); % staticMarkerData is a struct
-gapInfo = Vicon.findGaps(staticMarkerData);
-nGaps = sum(structfun(@numel, gapInfo));
+% if the static trial has no gaps: 
+staticData = Vicon.C3DtoTRC(staticC3D);
+Osim.writeTRC(staticData, 'FilePath', staticTrc);
 
-if nGaps ~= 0
-    % If the static trial has gaps, then fill them and use the unscaled
-    % osim file for segment info (to determine donors). This is not
-    % iterative gap filling, as iterative gap filling would require a
-    % scaled model, which is what we are trying to get in this section.
-    % This uses only interpolation methods. 
-    staticMarkerData = Vicon.GapFill(staticMarkerData, unscaledOsim);
-end
-Osim.Scale(staticMarkerData, scaleXml, scaledOsim);
+% if the static trial does have gaps, use the unscaled osim file for segment info: 
+    %staticMarkerData = Vicon.ExtractMarkers(staticC3D);
+    %staticMarkerData = Vicon.GapFill(staticMarkerData, unscaledOsim);
+    %markers2TRC(staticMarkerData, 'FilePath', staticTrc);
+
+Osim.Scale(staticTrc, scaleXml, scaledOsim);
 clc;
 %% Gap Fill a C3D file
 % show the number of gaps present at the beginning
 fprintf('Gap info of file: [nGapsx2 double]\n');
-markerStruct = Vicon.ExtractMarkers(c3dFile);
+markerStruct = Vicon.ExtractMarkers(c3dFile); % struct of marker data, equivalent to a trc file
 disp(Vicon.findGaps(markerStruct))
 
-[markerStruct, errorTable] = Vicon.IterativeGapFilling(c3dFile, ikXml, ...
+[markerStruct, errorTable] = Vicon.IterativeGapFilling(c3dFile, ...
+    'IkXml', ikXml, ...
     'VerboseLevel', verboseLevel, ...
     'ErrorThresholdHigh', errorThresholdHigh, ...
     'ErrorThresholdLow', errorThresholdLow, ...
@@ -86,7 +72,7 @@ fprintf('Look at the history in the command window to see gap info and gap filli
 fprintf('Writing .c3d file...\n');
 [~, trialname, ~] = fileparts(c3dFile);
 filledC3D = fullfile(outputDir, [trialname '_filled.c3d']);
-Vicon.markers2C3D(markerStruct, c3dFile, filledC3D);
+Vicon.markerstoC3D(markerStruct, c3dFile, filledC3D);
 
 % create a trc file 
 fprintf('Writing .trc file...\n');

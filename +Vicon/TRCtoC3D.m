@@ -1,11 +1,9 @@
 function c3dFileOut = TRCtoC3D(markerTable, c3dFileOrig, c3dFileOut)
 % c3dFileOut = TRCtoC3D(markerTable, c3dFileOrig, c3dFileOut)
-% Writes a table of marker data, such as one taken from readTRC, and writes
-% it to a new C3D file, using an old C3D file as a reference for any
+% Writes a table of marker data, such as one taken from Osim.readTRC, and
+% writes it to a new C3D file, using an old C3D file as a reference for any
 % required metadata. c3dFileOrig will not be modified, and a new C3D file
 % will be written to c3dFileOut, if it is provided. 
-%
-% See also: Vicon.markers2C3D
 
     if ~exist('c3dFileOut', 'var')
         c3dFileOut = [tempname() '.c3d'];

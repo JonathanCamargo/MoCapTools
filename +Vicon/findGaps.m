@@ -1,24 +1,23 @@
-function frames=findGaps(markerData)
-% For each marker in the marker data, find the pair of frame indices where
-% the gap starts and ends. A gap is defined as a closed interval where data
-% disapears and appears again, including the frame before it disapeared and
-% the frame after it appeared. This means that missing data until the end
-% of the capture and missing data at the beginning of a capture are not
-% counted as gaps, as they do not have data on both sides of the gap.
+function frames=findGaps(markers)
+% For each marker in the markers struct, find the pair of frame index where the gap starts and ends
+% remember that a gap is defined as a closed interval where data disapears and appears again (including 
+% the frame before it disapeared and the frame after it appeared).
 %
-% frames=findGaps(markerData)
-% markerData can be a struct, table, trc file, or mat file containing
-% marker data.
+% frames=findGaps(markers)
+% 
+% markers is a structure with fields for each marker containing size=[N,3] N: number of frames, 3: x,y,z coordinates  
+%
+    
+    markers = Osim.interpret(markers, 'TRC', 'struct');
+	markerNames=fieldnames(markers);
 
-    markerData = Osim.interpret(markerData, 'TRC', 'struct');
-	markerNames=fieldnames(markerData);
-
-	frames=markerData;
+	frames=markers;
 
 	for i=1:length(markerNames)
 		markerName=markerNames{i};
-		thisMarkerData=markerData.(markerName);
-		frames.(markerName)=findNanIntervals(thisMarkerData(:,1));
+		markerData=markers.(markerName);      
+        a=findNanIntervals(markerData{:,2});        
+		frames.(markerName)=reshape(markerData.Header(a),[],2);
 	end
 end
 

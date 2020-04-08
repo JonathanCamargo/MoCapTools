@@ -9,7 +9,7 @@ function stoOut = writeSTO(stoTable, varargin)
 % 'FilePath': file to export (default a tempfile)
 
     narginchk(1, 6);    
-	Osim.interpret(stoTable, 'STO');
+	stoTable = Osim.interpret(stoTable, 'STO');
 
 	p=inputParser;
 	addRequired(p,'stoTable',@istable);

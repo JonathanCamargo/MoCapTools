@@ -1,9 +1,8 @@
-function Scale(trcData,scaleTemplateFile,outputOsimFile)
-% Osim.Scale generates the scaled model outputOsimFile by using trcData,
-% which can be a file, struct, or table, as well as a scaleTemplateFile (in
-% xml format)
+function Scale(processedStaticTRCFilename,scaleTemplateFile,outputOsimFile)
+% OpenSimScale generates the scaled model outputOsimFile by using a markers
+% file staticTrcFileName and a scaleTemplateFile (in xml format)
 %
-% Osim.Scale(trcData,scaleTemplateFile,outputOsimFile)
+% Scale(processedStaticTRCFilename,scaleTemplateFile,outputOsimFile)
 % Returns:
 % None. This function creates a .osim file given by outputOsimFile
 %
@@ -15,8 +14,8 @@ function Scale(trcData,scaleTemplateFile,outputOsimFile)
     
     import org.opensim.modeling.*
 
-    processedStaticTRC = Osim.interpret(trcData, 'TRC', 'file');
-    trcTable = Osim.interpret(trcData, 'TRC', 'table');
+    processedStaticTRC = Osim.interpret(processedStaticTRCFilename, 'TRC', 'file');
+    trcTable = Osim.interpret(processedStaticTRCFilename, 'TRC', 'table');
     timeString = validateTimeRange(scaleTemplateFile, trcTable);
     
     %We start with a given scale templatefile we edit the template file to use a specific trc file

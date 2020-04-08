@@ -2,10 +2,10 @@ function sides = correlateForcePlates(trcTable, fpTable,varargin)
 % Determines which force plate acts on which feet by looking for the heel
 % closest to the point of action of a force on the first application of a
 % force for each force plate. 
-% sides = correlateForcePlates(trcData, fpData);
-% trcData and fpData can be tables, structs, or files containing
-% information about marker positions and force plate values, respectively.
-% sides is a character vector containing 'r' or 'l' for each character, and
+% Usage [SIDES] = correlateForcePlates(TRC_TABLE, FP_TABLE), where:
+% TRC_TABLE is a table containing all the information from a .trc file. 
+% FP_TABLE is a table containing all the information from a .mot file. 
+% SIDES is a character vector containing 'r' or 'l' for each character, and
 % the index corresponds to that force plate, in order that they appear in
 % the GRF file (ex. 'lrrrl' means the 1st and 5th force plates that appear
 % in the GRF file act on the left foot, and the other force plates act on
@@ -22,12 +22,13 @@ RightMarkers=p.Results.RightMarkers;
 %% update trc and fp to have same time scale
 fpTable = Osim.interpret(fpTable, 'MOT');
 trcTable = Osim.interpret(trcTable, 'TRC');
+
+
+fpData=interp1(fpTable.Header, fpTable{:,2:end},trcTable.Header);
+fpTable=array2table([trcTable.Header,fpData],'VariableNames',fpTable.Properties.VariableNames);
 %trialData.FP = fpTable;
 %trialData.TRC = trcTable;
-
-fpData = interp1(fpTable.Header, fpTable{:, 2:end}, trcTable.Header);
-fpTable = array2table([trcTable.Header, fpData], 'VariableNames', fpTable.Properties.VariableNames);
-%trialData = Topics.interpolate(trialData, trialData.TRC.Header, {'FP'});
+% trialData = Topics.interpolate(trialData, trialData.TRC.Header, {'FP'});
 %fpTable = trialData.FP;
 
 %% Get Marker Data
@@ -73,7 +74,8 @@ fpTable = array2table([trcTable.Header, fpData], 'VariableNames', fpTable.Proper
     
     for idx = 1:nForcePlates
         pressMask = pressed.(forcePlates{idx});
-        fpPos = cop.(forcePlates{idx})(pressMask, :);
+        fpPosTable = cop.(forcePlates{idx})(pressMask, :);
+        fpPos=fpPosTable{:,2:end};
         leftFootPos = trc.Left(pressMask, :);
         rightFootPos = trc.Right(pressMask, :);
         leftFootDist = sqrt(sum((fpPos - leftFootPos).^2, 2));
