@@ -1,18 +1,22 @@
 function mot = C3DtoMOT(c3dFile, varargin)
 % Exports filtered force plate data from a C3D file and returns a table
-% containing the data.
-% motTable = Vicon.C3DtoMOT(c3dFile)
-%
+% containing the data. The data is expressed in OpenSim coordinte frame
+% (i.e Y is up), you can use Vicon.transform to change the data to other 
+% orientations.
+% [motTable,cornersTbl] = Vicon.C3DtoMOT(c3dFile, varargin)
 %
 % c3dFile is the file that data will be exported from. 
-% FilterFreq is the cutoff frequency for filtering the data using a 10th
+% Optional Inputs: 
+% FilterFreq - the cutoff frequency for filtering the data using a 10th
 % order zero-lag Butterworth filter. If this input is not included, the
 % data will be filtered at 15Hz. If this input is negative, the data will
 % not be filtered.
-% CombinedForceplates adds another forceplate data (virtual) produced from
+% CombinedForceplates - adds another forceplate data (virtual) produced from
 % combining other forceplates together.
-% DeviceNames is a cell array of the devices names that should be used as
-% table headers. 
+% DeviceNames - cell array of the devices names that should be used as
+% table headers. Default is {'FP1', 'FP2', ...'}
+%
+% See also transform
 
     narginchk(1,7);
     p = inputParser;
@@ -29,23 +33,18 @@ function mot = C3DtoMOT(c3dFile, varargin)
     
     c3dHandle = btkReadAcquisition(c3dFile);
     
-    samplingFreq = btkGetAnalogFrequency(c3dHandle);
+    samplingFreq = btkGetAnalogFrequency(c3dHandle);    
 
-  %frames = (1:btkGetAnalogFrameNumber(c3dHandle))';
-	
-	% Changed time vector to start at correct time for trials that have been cropped (Dean)
-%     frames = (1:btkGetAnalogFrameNumber(c3dHandle))';
+    nRows = btkGetAnalogFrameNumber(c3dHandle);
+    % Assume that frist frame (usually frame1) is equivalent to time t=0
+    t0 = (btkGetFirstFrame(c3dHandle)-1)/btkGetPointFrequency(c3dHandle);    
+    time = t0+(((1:nRows) - 1 )' / btkGetAnalogFrequency(c3dHandle));
     
-    startFrame = btkGetFirstFrame(c3dHandle);
-    endFrame = btkGetLastFrame(c3dHandle)+1;
-    startTime = startFrame/btkGetPointFrequency(c3dHandle);
-    endTime = endFrame/btkGetPointFrequency(c3dHandle)-1/samplingFreq;
-    time = ((startTime:1/samplingFreq:endTime)-1/btkGetPointFrequency(c3dHandle))'; % Don't forget to start time at 0.0!
-
     fpList=btkGetForcePlatforms(c3dHandle);
     fpWrenches=btkGetForcePlatformWrenches(c3dHandle);
     fpWrenches_Local=btkGetForcePlatformWrenches(c3dHandle,0);            
     btkCloseAcquisition(c3dHandle);
+        
         
     %Extract transformation and F,M data for each forceplate
     fpData=[];
