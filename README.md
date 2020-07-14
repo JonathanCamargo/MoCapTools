@@ -1,6 +1,22 @@
 ﻿# Automated Gap Filling and Tools for Motion Capture by the Sensor-Fusion team from EPIC lab @GeorgiaTech
+ 
+If you find this code useful, please consider citing:
+ ```
+  @article{doi:10.1080/10255842.2020.1789971,
+    author = { Jonathan   Camargo  and  Aditya   Ramanathan  and  Noel   Csomay-Shanklin  and  Aaron   Young },
+    title = {Automated gap-filling for marker-based biomechanical motion capture data},
+    journal = {Computer Methods in Biomechanics and Biomedical Engineering},
+    publisher = {Taylor & Francis},
+    doi = {10.1080/10255842.2020.1789971},
+    note ={PMID: 32654510},
+    URL = {https://doi.org/10.1080/10255842.2020.1789971}
+  }
+```
+[Read the paper here](https://www.tandfonline.com/doi/abs/10.1080/10255842.2020.1789971?journalCode=gcmb20) 
+
 ### Purpose of this repo
-This repository is a the central location for different tools to ease the MoCap analysis, including programmatically running OpenSim, and automatically gap-filling of data.
+This repository contains different tools to ease the MoCap analysis, including programmatically running OpenSim, and automatically gap-filling of data.
+
 ## Setting up this repo
 In order to properly set up this repo, please make sure you have OpenSim downloaded and installed (http://simtk.org/frs/index.php?group_id=91), then run install.m to bind OpenSim to MATLAB, and to add this repo to your MATLAB path. For examples on how to use different functions in this repo, see +Osim/examples/example.m and +Vicon/examples/example.m
 
