@@ -27,7 +27,7 @@ Our team is part of the EPIC lab at Georgia Institute of Technology (www.epic.ga
 Please feel free to clone this repo and add whatever functionality you see fit. When adding code, please try to maintain the overall file structure outlined below.  
 
 ### Documentation
-All of the files within this repo should be well documented through the Matlab runtime environment. In order to read the documentation, type `help` in the Matlab command window followed by the name of any file. If the file does not contain documentation *please* feel free to start making some. Brief documentation for an entire package can be seen by typing `help Vicon` or `help Osim` into the command line, which pulls documentation from each function in the package folder. 
+All of the files within this repo should be well documented through the Matlab runtime environment. In order to read the documentation, type `help` in the Matlab command window followed by the name of any file. If the file does not contain documentation *please* feel free to include and request a pull. Brief documentation for an entire package can be seen by typing `help Vicon` or `help Osim` into the command line, which pulls documentation from each function in the package folder. 
 
 ### Getting started
 Check the examples inside the +Vicon folder and inside the +Osim folder
