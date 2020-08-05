@@ -7,18 +7,22 @@ function markerData = SplineFill(markerData, markerToFill, t0, t1)
 % represented with NaN, as opposed to zeros.
 %
 % e.g.
-% newMarkerData = Vicon.SplineFill(markerData, 'BadMarker', t0,t1);
+% newMarkerData = SplineFill(markerData, 'BadMarker', t0,t1);
 %
 %
-% For more details see +Vicon/SplineFill.m
+% For more details see +Vicon/SplineFill
 % See also Vicon
 
     x=markerData.(markerToFill);
-    t = 1:length(x);
-    framesToKeep = all(~isnan(x),2);
-    y = x(framesToKeep,:);
+    header=x.Header;
+    t0_idx=find(header==t0,1);
+    t1_idx=find(header==t1,1);
+    
+    t = header;
+    framesToKeep = all(~isnan(x.Variables),2);
+    y = x{framesToKeep,2:end};
     t = t(framesToKeep);
     a=interp1(t,y,(t0:t1),'pchip');
-    x(t0:t1,:)=a;
+    x{t0_idx:t1_idx,2:end}=a;
     markerData.(markerToFill)=x;
 end

@@ -1,5 +1,5 @@
 function out=getSegmentMarkers(vskFile)
-% Get marker structure from vsk model file to be used for gap filling
+% Get marker structure from vsk model file
 % 
 % out=Vicon.getSegmentMarkers(vskFile)
 

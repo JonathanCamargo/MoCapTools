@@ -22,14 +22,10 @@ RightMarkers=p.Results.RightMarkers;
 %% update trc and fp to have same time scale
 fpTable = Osim.interpret(fpTable, 'MOT');
 trcTable = Osim.interpret(trcTable, 'TRC');
-
-
-fpData=interp1(fpTable.Header, fpTable{:,2:end},trcTable.Header);
-fpTable=array2table([trcTable.Header,fpData],'VariableNames',fpTable.Properties.VariableNames);
-%trialData.FP = fpTable;
-%trialData.TRC = trcTable;
-% trialData = Topics.interpolate(trialData, trialData.TRC.Header, {'FP'});
-%fpTable = trialData.FP;
+trialData.FP = fpTable;
+trialData.TRC = trcTable;
+trialData = Topics.interpolate(trialData, trialData.TRC.Header, {'FP'});
+fpTable = trialData.FP;
 
 %% Get Marker Data
     % which marker do we want to use as representing the position of the

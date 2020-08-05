@@ -8,7 +8,7 @@ function arraydata = transform(arraydata,format)
 % tabledata is the data to be transformed
 % format can be 'OsimXYZ' to transform from Vicon to Osim
 %               'ViconXYZ' to transform from Osim to Vicon
-% 
+%               R (matrix)    an arbirary 3x3 rotation matrix
 % To transform table data that has a column for time: 
 % tabledata{:, 2:end} = Vicon.transform(tabledata{:, 2:end}, format);
 % 
@@ -19,13 +19,17 @@ function arraydata = transform(arraydata,format)
     rot_VICtoOSIM = [1, 0, 0; % rotation matrix for a single marker
             0, 0, -1;
             0, 1,0];
-        
-    if strcmpi(format,'OsimXYZ')
-        rot3=rot_VICtoOSIM;
-    elseif  strcmpi(format,'ViconXYZ')
-        rot3=rot_VICtoOSIM';
+    
+    if ~isnumeric(format)
+        if strcmpi(format,'OsimXYZ')
+            rot3=rot_VICtoOSIM;
+        elseif  strcmpi(format,'ViconXYZ')
+            rot3=rot_VICtoOSIM';
+        else
+            error('Reference system format not supported');
+        end
     else
-        error('Reference system format not supported');
+        rot3=format;
     end
     % construct a block diagonal matrix that has rot3 on the main diagonal,
     % with nPoints many copies so that we can transform all points at once

@@ -24,13 +24,14 @@ function [emg, gon] = C3DtoBIO(c3dFile)
     times = ((1:nRows) - 2 + t0)' / btkGetAnalogFrequency(c3dHandle);
     times = array2table(times);
     times.Properties.VariableNames = {'Header'};
+    
+    warning('Biometrics channels are hardcoded for SF2018 experiment')
+    
     gonIDs = {'GON', 'EMG', 'EMG', 'EMG', 'GON', 'GON', 'EMG', 'EMG'};
     emgIDs = {'EMG', 'EMG', 'EMG', 'GON', 'GON', 'EMG', 'EMG', 'EMG'};
     ids = [emgIDs, gonIDs];
-    
     gonHeads = {'knee_sagittal', 'bicepsfemoris', 'semitendinosus', 'gracilis', 'hip_sagittal', 'hip_frontal', 'gluteusmedius', 'rightexternaloblique'};
-
-  emgHeads = {'gastrocmed', 'tibialisanterior', 'soleus', 'ankle_sagittal', 'ankle_frontal', 'vastusmedialis', 'vastuslateralis', 'rectusfemoris'};
+    emgHeads = {'gastrocmed', 'tibialisanterior', 'soleus', 'ankle_sagittal', 'ankle_frontal', 'vastusmedialis', 'vastuslateralis', 'rectusfemoris'};
     labels = [emgHeads, gonHeads];
     tab = struct2table(analogData);
     if emgIdx == 1

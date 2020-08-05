@@ -77,7 +77,7 @@ function [jointAngleTable,errorTable,motOutputFile] = IK(processedTrcFileName, I
     ikTool.run();
     fprintf('Writing inverse kinematics output file to: %s\n',motOutputFile);
     if nargout > 1
-        markerResultFile = matchFiles(fullfile(resultsDir, '*locations.sto'));
+        markerResultFile = matchfiles(fullfile(resultsDir, '*locations.sto'));
         %calculateMarkerErrors is defined at the bottom
         stoTable=Osim.readSTO(markerResultFile{1});
         stoTable.Properties.VariableNames(2:end) = cellfun(@(x) {x([1:end-2, end])} , stoTable.Properties.VariableNames(2:end));

@@ -1,3 +1,4 @@
-%Osim.readTagFromXML is a function to read a value under a specific tag from an xml file.
-%    value = readTagFromXML(xml, tag)
-%
+function value = readTagFromXML(xml, tag)
+    xmlDoc = xmlread(xml);
+    value = char(xmlDoc.getElementsByTagName(tag).item(0).getTextContent());
+end
