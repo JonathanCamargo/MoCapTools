@@ -117,17 +117,17 @@ for i=1:size(lmatches,1)
 
    ustart=udata.Header(previousGapIdx+1);
    uend=udata.Header(nextGapIdx-1);       
-   a=Topics.cut(unlabeledMarkers,ustart,uend,unames(i));
-   utable=a.(unames{i});
+   a=Topics.cut(unlabeledMarkers,ustart,uend,umatches(i));
+   utable=a.(umatches{i});
    % Insert the unlabeled data into the labeled marker
    z=labeledMarkers.(lmatches{i});
    z{previousGapIdx+1:nextGapIdx-1,:}=utable.Variables;
    labeledMarkers.(lmatches{i})=z; 
    % Remove the unlabeled data from the unlabeled marker
    utable{:,2:end}=nan*utable{:,2:end};
-   z=unlabeledMarkers.(unames{i});
+   z=unlabeledMarkers.(umatches{i});
    z{previousGapIdx+1:nextGapIdx-1,:}=utable.Variables;
-   unlabeledMarkers.(unames{i})=z;
+   unlabeledMarkers.(umatches{i})=z;
    wasChanged=true;   
 end
 
@@ -159,7 +159,9 @@ function markers=predictPosition(markers,i)
     allmarkers=fieldnames(markers);
     %Smooth first to make it better   
     markers=Topics.processTopics(@smoothTable,markers,allmarkers);
-    markers=Topics.interpolate(markers,i,allmarkers);
+    interpMarkers=Topics.interpolate(markers,i,allmarkers);
+    markers=interpMarkers; % Add some mask to avoid extrapolating too far
+    
 end
 
 
