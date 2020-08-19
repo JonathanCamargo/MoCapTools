@@ -12,21 +12,24 @@ function intervals = findSwaps(allMarkers,varargin)
 %       MaxVelocity - (10)
 %       MaxAcceleration - (3)
 %       MinWidth - (1)  minimum width of section between velocity changes.
-%
+%       Extend - (false) / 'forward' / 'backward' / 'whole' Extends the
+%       intervals to the next/previous/(or both) sections of trajectory.
 %
 
 validScalar=@(x) isnumeric(x) && isscalar(x);
 p = inputParser;
-p.addParameter('VerboseLevel',0, validScalar);
-p.addParameter('MaxVelocity',10, validScalar);
+p.addParameter('Verbose',0, validScalar);
+p.addParameter('MaxVelocity',30, validScalar);
 p.addParameter('MaxAcceleration',3, validScalar);
 p.addParameter('MinWidth',3, validScalar);
+p.addParameter('Extend',false);
 
 %p.addParameter('MaxIterations',2,@isnumeric);
 %p.addParameter('StartAndEndMaxIterations',nan,@isnumeric);
 %p.addParameter('GapMaxIterations',nan,@isnumeric);
 p.parse(varargin{:});
-VerboseLevel = p.Results.VerboseLevel;
+Verbose = p.Results.Verbose;
+Extend = p.Results.Extend;
 MaxVelocity= p.Results.MaxVelocity;
 MaxAcceleration= p.Results.MaxAcceleration;
 MinWidth=p.Results.MinWidth;
@@ -36,11 +39,12 @@ normvelocity=Topics.transform(@(x)vecnorm(x,2,2),velocity);
 normacceleration=Topics.transform(@(x)vecnorm(x,2,2),acceleration);
 
 [allMarkerNames,unlabeledMarkers,unlabeledMarkerNames...
-        ,labeledMarkers,labeledMarkerNames] = getMarkerCategories(allMarkers);
+        ,labeledMarkers,labeledMarkerNames] = Vicon.MarkerCategories(allMarkers);
 
 intervals=struct();
 for markerIdx=1:numel(labeledMarkerNames)
     marker=labeledMarkerNames{markerIdx};       
+    
     header=velocity.(marker).Header;
     v=velocity.(marker){:,2:end}; a=acceleration.(marker){:,2:end}; 
     normv=normvelocity.(marker){:,2:end}; norma=normacceleration.(marker){:,2:end}; 
@@ -73,14 +77,55 @@ for markerIdx=1:numel(labeledMarkerNames)
     end
 end
 
-end 
-
+markerNames=fieldnames(intervals);
+isnanstruct=Topics.transform(@(x)(any(isnan(x(:,2:end)),2)),Topics.select(allMarkers,markerNames));
+if strcmp(Extend,'forward')     
+    for i=1:numel(markerNames)
+       marker=markerNames{i};
+       intervals.(marker)=ExtendForward(intervals.(marker),isnanstruct.(marker));
+    end            
+elseif strcmp(Extend,'backward')
+    for i=1:numel(markerNames)
+       marker=markerNames{i};
+       intervals.(marker)=ExtendBackward(intervals.(marker),isnanstruct.(marker));
+    end        
+elseif strcmp(Extend,'whole')
+    for i=1:numel(markerNames)
+       marker=markerNames{i};
+       intervals.(marker)=ExtendForward(intervals.(marker),isnanstruct.(marker));
+       intervals.(marker)=ExtendBackward(intervals.(marker),isnanstruct.(marker));
+    end        
+end
+end
 
 function out=gradienty(tabledata)
    [~,y]=gradient(tabledata{:,2:end});
    out=tabledata; out{:,2:end}=y;
 end
 
+function intervals=ExtendForward(intervals,isnanframe)
+    for i=1:numel(intervals)
+        %Find the next frame that has nan (or last frame)
+        interval=intervals{i};                
+        nextFrame=find(isnanframe.Header>interval(2) & isnanframe{:,2},1,'first');
+        if isempty(nextFrame)
+            nextFrame=isnanframe.Header(end);
+        end        
+        interval=[interval(1) nextFrame];
+        intervals{i}=interval;
+    end    
+end
 
-
+function intervals=ExtendBackward(intervals,isnanframe)
+    for i=1:numel(intervals)
+        %Find the next frame that has nan (or last frame)
+        interval=intervals{i};        
+        nextFrame=find(isnanframe.Header<interval(1) & isnanframe{:,2},1,'last');
+        if isempty(nextFrame)
+            nextFrame=isnanframe.Header(1);
+        end        
+        interval=[nextFrame interval(2)];
+        intervals{i}=interval;
+    end    
+end
 

@@ -1,5 +1,6 @@
 function [allMarkerNames,unlabeledMarkers,unlabeledMarkerNames,labeledMarkers,labeledMarkerNames] = MarkerCategories(allMarkers)
 % For a set of markerdata split the markers in labeled/unlabeled categories
+% [allMarkerNames,unlabeledMarkers,unlabeledMarkerNames,labeledMarkers,labeledMarkerNames] = MarkerCategories(allMarkers)
 
     allMarkers=Osim.interpret(allMarkers,'TRC','struct');
     allMarkerNames=fieldnames(allMarkers);

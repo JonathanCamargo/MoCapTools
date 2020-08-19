@@ -22,7 +22,9 @@ function [newMarkerData,newUnlabeledMarkers]=unlabelIntervals(markerData,interva
         end
         segments=Topics.segment(justOneMarker,intervals.(intervalName),intervalName);
         a=[segments{:}]; 
-        orig.(intervalName)=vertcat(a.(intervalName));    
+        aa=vertcat(a.(intervalName)); 
+        [~,idx]=unique(aa.Header);
+        orig.(intervalName)=aa(idx,:);
     end
     cleaned=Topics.transform(@(x)(x*nan),orig,intervalNames);    
     removedSections=struct2cell(orig);

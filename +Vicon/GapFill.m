@@ -157,7 +157,11 @@ else
                 spFills = spFills + 1;
                 if isGapTableArg
                     gapTable2 = Vicon.genGapTable(markerData);
-                    gapTable = intersect(gapTable,gapTable2);
+                    if ~isempty(gapTable2)
+                        gapTable = intersect(gapTable,gapTable2);
+                    else
+                        gapTable=gapTable2;
+                    end
                 else
                     gapTable = Vicon.genGapTable(markerData);
                 end
