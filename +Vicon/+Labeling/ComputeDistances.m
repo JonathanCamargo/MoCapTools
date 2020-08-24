@@ -1,4 +1,4 @@
-function [distancesMatrix,lnames]=Label_ComputeDistances(allmarkers)
+function [distancesMatrix,lnames]=ComputeDistances(allmarkers)
 % Find the distance between every marker to every other marker. Returns an 
 % N-by-N matrix with the distance.
 % distancesMatrix=Label_ComputeDistances(allmarkers);

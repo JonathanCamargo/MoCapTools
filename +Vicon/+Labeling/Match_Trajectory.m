@@ -1,7 +1,8 @@
-function matches=Label_MatchSelfTrajectory(allmarkers,frame,varargin)
-% Find matches between unlabeled markers and labels based on the
-% interpolation/extrapolation of each marker trajectory to unlabeled
-% frames.
+function matches=Match_Trajectory(allmarkers,frame,varargin)
+% Find matches between markers that are not labeled in the frame to markers
+% that exist in the frame based on the  interpolation/extrapolation
+% of each marker trajectory. Returns a cell array with two columns where
+% each row defines a match. (original label->replacement label)
 %
 % This function can be used stand alone or as part of
 % Vicon.Label.
@@ -9,28 +10,26 @@ function matches=Label_MatchSelfTrajectory(allmarkers,frame,varargin)
 % matches=Label_MatchSelfTrajectory(allmarkers,frame,varargin)
 %
 % allmarkers: is the marker structure as found with Vicon.ExtractMarkers
-% segmentMarkers: is the structure containing the mapping from
-% labels to segments and segments to labels found with
-% Vicon.getSegmentMarkers (from .vsk files) or Osim.model.getSegmentMarkers (from .osim
-% files).
-
+% frame: the frame where the matching is analized.
 %
 % Optional parameters:
+% 'IncludeLabeled' (false)/true add other labeled marker to the matching.
 
 
 
     p=inputParser();          
-    p.addParameter('MaxDistance',10);
-    p.addParameter('MaxWindow',10); % Max window of frames for a valid interpolation (extrapolation)
-    p.addParameter('Verbose',10);
+    p.addParameter('MaxDistance',10,@isnumeric); %Max distance tolerable for a valid match
+    p.addParameter('MaxWindow',10,@isnumeric); % Max window of frames for a valid interpolation (extrapolation)
+    p.addParameter('IncludeLabeled',true,@islogical);
+    p.addParameter('Verbose',2);
     p.parse(varargin{:});
     
     MaxDistance=p.Results.MaxDistance;
     MaxWindow=p.Results.MaxWindow;
     Verbose=p.Results.Verbose;
+    IncludeLabeled=p.Results.IncludeLabeled;
     allmarkers=Osim.interpret(allmarkers,'TRC','struct');
-    
-   
+       
     %% Get the frame data
     thisFrame=Topics.cut(allmarkers,frame,frame);
     [allnames,umarkers,unames,lmarkers,lnames]=Vicon.MarkerCategories(thisFrame);
@@ -42,51 +41,71 @@ function matches=Label_MatchSelfTrajectory(allmarkers,frame,varargin)
     section=Topics.cut(allmarkers,frame-100,frame+100);
     
     %% For efficiency only work with lmarkers that are not labeled at this frame and
-    % umarkers that exist at this frame.
+    % umarkers that exist at this frame. if IncludeLabeled markers is
+    % enabled add other lmarkers that are labeled at this frame to the
+    % possible umarkers.
+    
     [~,ind]=ismember(lnames,allnames);
     % Get all the points from missing labeled markers    
     hasNaN=struct2array(Topics.processTopics(@(x)(any(isnan(x.Variables),2)),thisFrame));        
     isMissing=hasNaN(ind);
-    lnames=lnames(isMissing);
-    if isempty(lnames)
+    ulnames=lnames(isMissing);
+    if isempty(ulnames)
         if (Verbose>0)
             fprintf('No missing markers in frame header=%f\n',frame);
         end    
         return;
     end
-    m=Topics.select(section,lnames);
+    m=Topics.select(section,ulnames);
     predicted=predictPosition(m,frame,MaxWindow);
     a=struct2cell(predicted); a=vertcat(a{:});
-    lpoints=a(:,2:end); 
-    lpoints=lpoints(~any(isnan(lpoints.Variables),2),:);
-    lnames=lnames(~any(isnan(lpoints.Variables),2),:);
+    ulpoints=a(:,2:end); 
+    ulpoints=ulpoints(~any(isnan(ulpoints.Variables),2),:);
+    ulnames=ulnames(~any(isnan(ulpoints.Variables),2),:);
 
     % Get all the points from existing unlabeled markers
     [~,ind]=ismember(unames,allnames);
-    isMissing=hasNaN(ind);
-    unames=unames(~isMissing);
-    if isempty(unames)
+    notMissing=hasNaN(ind);
+    unames=unames(~notMissing);
+    if isempty(unames) && ~IncludeLabeled
         if (Verbose>0)
             fprintf('No unlabeled markers in frame header=%1.2f\n',frame);
         end     
         return;
     end
-    m=Topics.select(thisFrame,unames,'Search','strcmp');
-    a=struct2cell(m); a=vertcat(a{:});
-    upoints=a(:,2:end);       
-
+    if ~isempty(unames)
+        m=Topics.select(thisFrame,unames,'Search','strcmp');
+        a=struct2cell(m); a=vertcat(a{:});
+        upoints=a(:,2:end);
+    else
+        upoints=[];
+    end
+    
+    % Get all the points from labeled markers that are present in this
+    % frame.
+    [~,ind]=ismember(lnames,allnames);
+    notMissing=~hasNaN(ind);
+    olnames=lnames(notMissing);
+    if ~isempty(olnames)
+        m=Topics.select(thisFrame,olnames,'Search','strcmp');
+        a=struct2cell(m); a=vertcat(a{:});
+        olpoints=a(:,2:end);
+        upoints=[upoints;olpoints];
+        unames=[unames;olnames];
+    end        
+    
     %% Check linking matches between lpoints and upoints
-    cost=inf(size(lpoints,1),size(upoints,1));
-    for i=1:size(lpoints,1)
+    cost=inf(size(ulpoints,1),size(upoints,1));
+    for i=1:size(ulpoints,1)
         for j=1:size(upoints,1)
-            cost(i,j)=norm(lpoints{i,:}-upoints{j,:},2);
+            cost(i,j)=norm(ulpoints{i,:}-upoints{j,:},2);
         end
     end
     
     % Use matchPairs to find the optimal cost assignement
     [matches,~,~]=matchpairs(cost,MaxDistance);
-    lmatches=lnames(matches(:,1));
-    umatches=unames(matches(:,2));
+    lmatches=ulnames(matches(:,1));
+    umatches=unames(matches(:,2));   
     matches=[umatches,lmatches];
 end
 
@@ -118,12 +137,6 @@ function markers=predictPosition(markers,frame,window)
             a{:,2:end}=inf;
             interpMarkers.(marker)=a;
         end
-    end
-                
-            
-        
-    
-    
-    markers=interpMarkers; 
-    
+    end   
+    markers=interpMarkers;     
 end

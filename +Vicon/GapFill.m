@@ -10,11 +10,11 @@ function markerData = GapFill(markerData, modelFile, varargin)
 %   Optional Inputs:
 %       GapTable - Gap fill only the gaps in the table (use
 %       Vicon.genGapTable to make the table).
-%       VerboseLevel - 0 (minimal, default), 1 (normal), 2 (debug mode)
+%       Verbose - 0 (minimal, default), 1 (normal), 2 (debug mode)
 %       EnableShort  - (true)/false , enable filling of short gaps
 %       EnableLong   - (true)/false , enable filling of long gaps
 %       ShortGap - (3) max lenght of what is considered a short gap
-%
+
 %   Out:
 %       markerData - struct of filled marker data
 %
@@ -23,11 +23,10 @@ function markerData = GapFill(markerData, modelFile, varargin)
 
 p = inputParser;
 p.addOptional('GapTable',{},@istable);
-p.addParameter('VerboseLevel',0);
-p.addParameter('ShortGap',3);
+p.addParameter('Verbose',0);
 p.addParameter('EnableShort',true);
 p.addParameter('EnableLong',true);
-
+p.addParameter('ShortGap',5);
 p.parse(varargin{:});
 
 gapTable = p.Results.GapTable;
@@ -38,7 +37,7 @@ if isempty(gapTable)
     isGapTableArg=false;
 end
 
-verboseLevel = p.Results.VerboseLevel;
+Verbose = p.Results.Verbose;
 SHORTGAP=p.Results.ShortGap; % MAX length of a shortgap (Filled with splinefill)
 EnableShort=p.Results.EnableShort;
 EnableLong=p.Results.EnableLong;
@@ -53,6 +52,7 @@ else
     error('Could not identify segment information from osim model.');
 end
 [~, valid_marker, ~] = intersect(fieldnames(markerData),fieldnames(segments));
+
 % remove markers in markerData which are not attached to a segment
 otherMarkers = rmfield(markerData,markers(valid_marker));
 markerData = rmfield(markerData, setdiff(markers, markers(valid_marker)));
@@ -87,20 +87,32 @@ else
 
     if EnableShort
         % spline fill +really short gaps
-        while (idx<=height(gapTable) && gapTable.Length(idx) <= SHORTGAP )
-            markerData = Vicon.SplineFill(markerData, gapTable.Markers{idx}, gapTable.Start(idx), gapTable.End(idx));
-            shortSpFills = shortSpFills + 1;
-            idx = idx + 1;
-            %progress(idx/sum(gapTable.Length == 1), h);
-        end     
+        gapTableChanged=true;
+        tempShortSpFills=0;
+        while (true)
+            idx=1;
+            while (idx<=height(gapTable) && gapTable.Length(idx) <= SHORTGAP )
+                marker=gapTable.Markers{idx};
+                if ~isfield(markerData,marker)
+                    idx=idx+1;
+                    continue;
+                end
+                [markerData,err] = Vicon.SplineFill(markerData, gapTable.Markers{idx}, gapTable.Start(idx), gapTable.End(idx));
+                if ~err
+                    shortSpFills = shortSpFills + 1;
+                end
+                idx = idx + 1;            
+                %progress(idx/sum(gapTable.Length == 1), h)                                                            
+            end             
+            gapTable=UpdateGapTable(markerData,gapTable,isGapTableArg);
+            if (shortSpFills==tempShortSpFills)                
+                break;
+            end
+            tempShortSpFills=shortSpFills;            
+         end
     end
     
-    if isGapTableArg
-        gapTable2 = Vicon.genGapTable(markerData);
-        gapTable = intersect(gapTable,gapTable2);
-    else
-        gapTable = Vicon.genGapTable(markerData);
-    end
+   gapTable=UpdateGapTable(markerData,gapTable,isGapTableArg);
     
     if EnableLong
         while change
@@ -132,39 +144,22 @@ else
                     end
                     %progress(i/height(gapTable), h);
                 end
-                    if isGapTableArg
-                        gapTable2 = Vicon.genGapTable(markerData);
-                        if ~isempty(gapTable2)
-                            gapTable = intersect(gapTable,gapTable2);
-                        else
-                            gapTable = gapTable2;
-                        end
-                    else
-                        gapTable = Vicon.genGapTable(markerData);
-                    end
+            gapTable=UpdateGapTable(markerData,gapTable,isGapTableArg);
+
     
             end
 
             if height(gapTable) == 0
                 change = false;
             else
-                if verboseLevel > 0
+                if Verbose > 0
                     if gapTable.Length(1) > 10
                         warning('Spline-filling Large gap');
                     end
                 end
-                markerData = Vicon.SplineFill(markerData, gapTable.Markers{1}, gapTable.Start(1), gapTable.End(1));
+                markerData = Vicon.SplineFill(markerData, gapTable.Markers{1}, gapTable.Start(1), gapTable.End(1),'MaxError',inf);
                 spFills = spFills + 1;
-                if isGapTableArg
-                    gapTable2 = Vicon.genGapTable(markerData);
-                    if ~isempty(gapTable2)
-                        gapTable = intersect(gapTable,gapTable2);
-                    else
-                        gapTable=gapTable2;
-                    end
-                else
-                    gapTable = Vicon.genGapTable(markerData);
-                end
+                gapTable=UpdateGapTable(markerData,gapTable,isGapTableArg);
 
                 change = true;
             end
@@ -174,7 +169,7 @@ else
     markerData=Topics.merge(markerData,otherMarkers);
     
     %delete(h);
-    if verboseLevel > 0
+    if Verbose > 0
         fprintf(['   %d gaps filled with rigid body fill.\n' ...
             '   %d gaps filled with pattern fill.\n' ...
             '   %d gaps filled with spline fill.\n' ...
@@ -183,4 +178,19 @@ else
         fprintf('   %d gaps filled\n', rbFills + ptFills + spFills + shortSpFills);
     end
 end
+end
+
+function updatedGapTable=UpdateGapTable(markerData,originalGapTable,isGapTableArg)
+    gapTable=originalGapTable;
+    if isGapTableArg
+                gapTable2 = Vicon.genGapTable(markerData);
+                if ~isempty(gapTable2)
+                    gapTable = intersect(gapTable,gapTable2);
+                else
+                    gapTable=gapTable2;
+                end
+            else
+                gapTable = Vicon.genGapTable(markerData);
+    end
+    updatedGapTable=gapTable;
 end

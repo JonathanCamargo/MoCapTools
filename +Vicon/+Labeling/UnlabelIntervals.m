@@ -1,4 +1,4 @@
-function [newMarkerData,newUnlabeledMarkers]=unlabelIntervals(markerData,intervals)
+function [newMarkerData,newUnlabeledMarkers]=UnlabelIntervals(markerData,intervals)
   % Unlabel markers from a markerset preserving data unlabeled data as new
   % unlabeled markers. Use a structure intervals to define sections of data to be unlabeled.
   % [markerData,newUnlabeledMarkers]=unlabelIntervals(markerData,intervals)

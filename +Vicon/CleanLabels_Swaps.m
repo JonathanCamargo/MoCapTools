@@ -1,7 +1,7 @@
 function allMarkers = CleanLabels_Swaps(allMarkers,varargin)
 % allMarkers = CleanLabels_Swaps(allMarkers,varargin)
 % For a labeled marker structure clean the marker labels by using the following steps:
-% 1. Looking into posisble marker swapping and unlabel the swapping events
+% 1. Looking into possible marker swapping and unlabel the swapping events
 % 2. Label around the swapping events
 %  Options:
 %       VerboseLevel  - (0) minimal output, 1 normal, 2 debug mode
@@ -9,9 +9,9 @@ function allMarkers = CleanLabels_Swaps(allMarkers,varargin)
 
 validScalar=@(x) isnumeric(x) && isscalar(x);
 p = inputParser;
-p.addParameter('VerboseLevel',0, validScalar);
+p.addParameter('Verbose',0, validScalar);
 p.parse(varargin{:});
-VerboseLevel = p.Results.VerboseLevel;
+Verbose = p.Results.Verbose;
 
 
 % We start with a file that is labeled but potentially has problems
@@ -20,7 +20,7 @@ VerboseLevel = p.Results.VerboseLevel;
 % 1. Looking into posible marker swapping and unlabel the swapping events
 % 2. Label around the swapping events
 
-VerboseLevel=2;
+Verbose=2;
 
 markers=allMarkers;
 %% 1. Looking into posible marker swapping and unlabel the swapping events

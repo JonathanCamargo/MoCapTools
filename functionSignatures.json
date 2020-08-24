@@ -202,44 +202,6 @@
         ]
     },
 
-
-
-    "sf2018.ExportAnalog":
-    {
-        "inputs": 
-        [
-            {"name":"c3dFile","kind":"required","type":"file=*.c3d"},
-            {"name":"outputDir","kind":"required","type":"folder"}
-        ]
-    },
-    "sf2018.ExportRos":
-    {
-        "inputs": 
-        [
-            {"name":"bagFile","kind":"required","type":"file=*.bag"},
-            {"name":"outputDir","kind":"required","type":"folder"}
-        ]
-    },
-    "sf2018.label_LG":
-    {
-        "inputs":
-        [
-            {"name":"file","kind":"required","type":"file=*.mat"},
-            {"name":"generateFSR","kind":"required","type":["logical", "scalar"]},
-            {"name":"toPlot","kind":"required","type":["logical", "scalar"]}
-        ]
-    },
-    "sf2018.label_TP":
-    {
-        "inputs":
-        [
-            {"name":"file","kind":"required","type":"file=*.mat"},
-            {"name":"Plot","kind":"ordered","type":["logical", "scalar"]}
-        ]
-    },
-
-
-
     "Vicon.C3DtoBER":
     {
         "inputs":
@@ -291,7 +253,9 @@
         [
             {"name":"markerData", "kind":"required", "type":"struct"},
             {"name":"osimModel","kind":"required","type":"file=*.osim"},
-            {"name":"VerboseLevel","kind":"namevalue","type":"numeric"}
+            {"name":"Verbose","kind":"namevalue","type":"numeric"},
+			{"name":"EnableLong","kind":"namevalue","type":["logical","scalar"],"purpose":"Option"},
+			{"name":"EnableShort","kind":"namevalue","type":["logical"]}						
         ]
     },
     "Vicon.GapMake":
@@ -300,7 +264,7 @@
         [
             {"name":"markerData", "kind":"required", "type":"struct"},
             {"name":"ikXml","kind":"required","type":"file=*.xml"},
-            {"name":"VerboseLevel","kind":"namevalue","type":"numeric"},
+            {"name":"Verbose","kind":"namevalue","type":"numeric"},
             {"name":"ErrorThresholdLow","kind":"namevalue","type":"numeric"},
             {"name":"ErrorThresholdHigh","kind":"namevalue","type":"numeric"}
         ]
