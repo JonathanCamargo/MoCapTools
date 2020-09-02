@@ -10,7 +10,7 @@ function trc = C3DtoTRC(c3dFile)
     c3dHandle = btkReadAcquisition(c3dFile);
     
     samplingFreq = btkGetPointFrequency(c3dHandle);
-    frames = (btkGetFirstFrame(c3dHandle):btkGetLastFrame(c3dHandle))';
+    frames = (btkGetFirstFrame(c3dHandle):btkGetLastFrame(c3dHandle))';w
     meta = btkGetMetaData(c3dHandle);
     markerData = btkGetMarkersValues(c3dHandle);
     nPoints = btkGetPointNumber(c3dHandle);

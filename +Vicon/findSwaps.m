@@ -32,9 +32,9 @@ Verbose = p.Results.Verbose;
 %MaxAcceleration= p.Results.MaxAcceleration;
 MinWidth=p.Results.MinWidth;
 velocity=Topics.processTopics(@gradienty,allMarkers);
-%acceleration=Topics.processTopics(@gradienty,velocity);
+acceleration=Topics.processTopics(@gradienty,velocity);
 normvelocity=Topics.transform(@(x)vecnorm(x,2,2),velocity);
-%normacceleration=Topics.transform(@(x)vecnorm(x,2,2),acceleration);
+normacceleration=Topics.transform(@(x)vecnorm(x,2,2),acceleration);
 
 [allMarkerNames,unlabeledMarkers,unlabeledMarkerNames...
         ,labeledMarkers,labeledMarkerNames] = Vicon.MarkerCategories(allMarkers);
@@ -44,15 +44,19 @@ for markerIdx=1:numel(labeledMarkerNames)
     marker=labeledMarkerNames{markerIdx};       
     
     header=velocity.(marker).Header;
-    %v=velocity.(marker){:,2:end}; %a=acceleration.(marker){:,2:end}; 
-    normv=normvelocity.(marker){:,2:end}; %norma=normacceleration.(marker){:,2:end}; 
-    %vunit=v./normv;
-    %acctraj=vecnorm(dot(vunit,a,2),2,2);
-    %acctang=sqrt(norma.^2-acctraj.^2);
+    v=velocity.(marker){:,2:end}; a=acceleration.(marker){:,2:end}; 
+    normv=normvelocity.(marker){:,2:end}; norma=normacceleration.(marker){:,2:end}; 
+    vunit=v./normv;
+    acctraj=vecnorm(dot(vunit,a,2),2,2);
+    acctang=sqrt(norma.^2-acctraj.^2);
     %idxa=isoutlier(acctang,'mean','ThresholdFactor',5) & (acctang>MaxAcceleration);    
+    
     filterednormv=abs(normv-movmean(normv,200));
     idxv=isoutlier(filterednormv,'median','ThresholdFactor',20);
-    idx=filterglitch(idxv,MinWidth);
+    
+    filteredacctang=abs(acctang-movmean(acctang,200));
+    idxa=isoutlier(filteredacctang,'median','ThresholdFactor',20);
+    idx=filterglitch((idxv | idxa),MinWidth);
     %{
     % plot    
     offset=2000;%20000;
