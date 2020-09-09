@@ -48,14 +48,16 @@ for markerIdx=1:numel(labeledMarkerNames)
     normv=normvelocity.(marker){:,2:end}; norma=normacceleration.(marker){:,2:end}; 
     vunit=v./normv;
     acctraj=vecnorm(dot(vunit,a,2),2,2);
-    acctang=sqrt(norma.^2-acctraj.^2);
+    acctang=sqrt(abs(norma.^2-acctraj.^2));
     %idxa=isoutlier(acctang,'mean','ThresholdFactor',5) & (acctang>MaxAcceleration);    
     
     filterednormv=abs(normv-movmean(normv,200));
     idxv=isoutlier(filterednormv,'median','ThresholdFactor',20);
     
-    filteredacctang=abs(acctang-movmean(acctang,200));
+    %filteredacctang=abs(acctang-movmean(acctang,200));
+    filteredacctang=acctang;
     idxa=isoutlier(filteredacctang,'median','ThresholdFactor',20);
+    idxa=(idxa & (filteredacctang>5));
     idx=filterglitch((idxv | idxa),MinWidth);
     %{
     % plot    

@@ -7,7 +7,6 @@ function matches=Match_DonorDistance(allmarkers,frame,segmentMarkers,varargin)
 %
 % This function can be used stand alone or as part of
 % Vicon.Labeling.Label.
-% % 
 %
 % allmarkers: is the marker structure as found with Vicon.ExtractMarkers
 % frame: is the frame value
@@ -15,7 +14,6 @@ function matches=Match_DonorDistance(allmarkers,frame,segmentMarkers,varargin)
 % labels to segments and segments to labels found with
 % Vicon.getSegmentMarkers (from .vsk files) or Osim.model.getSegmentMarkers (from .osim
 % files).
-%
 %
 % Optional parameters:
 % 'RelativeDistances': M (a matrix that contains the relative distance from
@@ -26,11 +24,12 @@ function matches=Match_DonorDistance(allmarkers,frame,segmentMarkers,varargin)
 
     p=inputParser();    
     p.addParameter('RelativeDistances',[]);
-    
+    p.addParameter('MaxDistance',20); 
 
 
     p.parse(varargin{:});
     M=p.Results.RelativeDistances;
+    MaxDistance=p.Results.MaxDistance;
     allmarkers=Osim.interpret(allmarkers,'TRC','struct');
     
     if isempty(M)    
@@ -123,7 +122,7 @@ function matches=Match_DonorDistance(allmarkers,frame,segmentMarkers,varargin)
 
     %% Use matchPairs to find the optimal cost assignement   
     cost(isnan(cost))=inf;
-    [matches,~,~]=matchpairs(cost,10);
+    [matches,~,~]=matchpairs(cost,MaxDistance);
     umatches=unames(matches(:,1));
     ulmatches=ulnames(matches(:,2));
     matches=[umatches,ulmatches];

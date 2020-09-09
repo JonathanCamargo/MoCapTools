@@ -19,7 +19,7 @@ function matches=Match_Trajectory(allmarkers,frame,varargin)
 
     p=inputParser();          
     p.addParameter('MaxDistance',10,@isnumeric); %Max distance tolerable for a valid match
-    p.addParameter('MaxWindow',10,@isnumeric); % Max window of frames for a valid interpolation (extrapolation)
+    p.addParameter('MaxWindow',25,@isnumeric); % Max window of frames for a valid interpolation (extrapolation)
     p.addParameter('IncludeLabeled',true,@islogical);
     p.addParameter('Verbose',2);
     p.parse(varargin{:});
@@ -125,8 +125,8 @@ function markers=predictPosition(markers,frame,window)
     % time.
     allmarkers=fieldnames(markers);
     %Smooth first to make it better   
-    markers=Topics.processTopics(@smoothTable,markers,allmarkers,'Parallel',true);
-    interpMarkers=Topics.interpolate(markers,frame,allmarkers);
+    thisMarkers=Topics.processTopics(@smoothTable,markers,allmarkers,'Parallel',true);
+    interpMarkers=Topics.interpolate(thisMarkers,frame,allmarkers);
     % Avoid extrapolating too far
     zoom=Topics.cut(markers,frame-window,frame+window);
     allnan=Topics.processTopics(@(x)(all(isnan(x{:,2:end}),'all')),zoom);

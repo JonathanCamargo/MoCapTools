@@ -46,6 +46,11 @@ for markerIdx=1:numel(markers)
         if ~isnanTable{isnanTable.Header==interval(2),marker}
             continue;
         end
+        
+        % If interval contains the first frame or last frame abort
+        if ((interval(1)==startFrame) || (interval(2)==endFrame))
+            continue;
+        end
                         
         [direction]=SolveSwap(allmarkers,marker,interval,M);
         

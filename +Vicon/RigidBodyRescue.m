@@ -70,7 +70,7 @@ for i=1:numel(header)
     end
     R = V * L * U';
     
-    % Plot this shit
+    % Plot this
     %x1c=x1-c1;
     %x0c=x0-c0;
     %plot3(x1c(1,:),x1c(2,:),x1c(3,:),'b.'); hold on;

@@ -51,11 +51,12 @@ function intervals=ExtendForward(intervals,isnanframe)
     for i=1:numel(intervals)
         %Find the next frame that has nan (or last frame)
         interval=intervals{i};                
-        nextFrame=find(isnanframe.Header>=interval(2) & isnanframe{:,2},1,'first');
-        if isempty(nextFrame)
+        nextFrameIdx=find(isnanframe.Header>=interval(2) & isnanframe{:,2},1,'first');
+        if isempty(nextFrameIdx)
             nextFrame=isnanframe.Header(end);
         else
-            nextFrame=max([nextFrame-1,interval(2)]);
+            nextFrameIdx=max([nextFrameIdx-1,1]);
+            nextFrame=max([isnanframe.Header(nextFrameIdx),interval(2)]);
         end
         interval=[interval(1) nextFrame];
         intervals{i}=interval;
@@ -65,12 +66,12 @@ end
 function intervals=ExtendBackward(intervals,isnanframe)
     for i=1:numel(intervals)
         %Find the next frame that has nan (or initial frame)
-        interval=intervals{i};        
-        nextFrame=find(isnanframe.Header<=interval(1) & isnanframe{:,2},1,'last');
-        if isempty(nextFrame)
+        interval=intervals{i};                
+        nextFrameIdx=find(isnanframe.Header<=interval(1) & isnanframe{:,2},1,'last');
+        if isempty(nextFrameIdx)
             nextFrame=isnanframe.Header(1);
         else
-            nextFrame=min([interval(1) nextFrame+1]);
+            nextFrame=min([interval(1) isnanframe.Header(nextFrameIdx+1)]);
         end
         interval=[nextFrame interval(2)];
         intervals{i}=interval;
