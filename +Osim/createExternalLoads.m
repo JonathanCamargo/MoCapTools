@@ -12,7 +12,14 @@ function extLoadsFileName = createExternalLoads(devices, sides, extLoadsFileName
 % random file in the temporary folder. In either case, a path to the xml
 % file will be returned. 
 % 
-% Ex. createExternalLoads({'Left_Force', 'Right_Force'}, 'lr', 'ExternalLoads.xml')
+% e.g. createExternalLoads({'Left_Force', 'Right_Force'}, 'lr', 'ExternalLoads.xml')
+%
+%
+% Optional Name-Value pairs:
+%
+% 'RightBody': name of the rigid body to attatch the right side force
+% 'LeftBody': name of the rigid body to attatch the Left side force
+%
 
 p=inputParser();
 p.addParameter('RightBody',[],@ischar);

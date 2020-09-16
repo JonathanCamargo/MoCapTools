@@ -31,12 +31,6 @@ p.parse(varargin{:});
 
 gapTable = p.Results.GapTable;
 
-isGapTableArg=true;
-if isempty(gapTable)
-    gapTable=Vicon.genGapTable(markerData);
-    isGapTableArg=false;
-end
-
 Verbose = p.Results.Verbose;
 SHORTGAP=p.Results.ShortGap; % MAX length of a shortgap (Filled with splinefill)
 EnableShort=p.Results.EnableShort;
@@ -65,6 +59,12 @@ for idx = 1:length(markersWithNoData)
     if ischar(seg)
         segments.(seg) = setdiff(segments.(seg), marker);
     end
+end
+
+isGapTableArg=true;
+if isempty(gapTable)
+    gapTable=Vicon.genGapTable(markerData);
+    isGapTableArg=false;
 end
 
 %%

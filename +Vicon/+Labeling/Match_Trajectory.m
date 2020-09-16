@@ -81,18 +81,20 @@ function matches=Match_Trajectory(allmarkers,frame,varargin)
         upoints=[];
     end
     
-    % Get all the points from labeled markers that are present in this
-    % frame.
-    [~,ind]=ismember(lnames,allnames);
-    notMissing=~hasNaN(ind);
-    olnames=lnames(notMissing);
-    if ~isempty(olnames)
-        m=Topics.select(thisFrame,olnames,'Search','strcmp');
-        a=struct2cell(m); a=vertcat(a{:});
-        olpoints=a(:,2:end);
-        upoints=[upoints;olpoints];
-        unames=[unames;olnames];
-    end        
+    if IncludeLabeled
+        % Get all the points from labeled markers that are present in this
+        % frame.
+        [~,ind]=ismember(lnames,allnames);
+        notMissing=~hasNaN(ind);
+        olnames=lnames(notMissing);
+        if ~isempty(olnames)
+            m=Topics.select(thisFrame,olnames,'Search','strcmp');
+            a=struct2cell(m); a=vertcat(a{:});
+            olpoints=a(:,2:end);
+            upoints=[upoints;olpoints];
+            unames=[unames;olnames];
+        end        
+    end
     
     %% Check linking matches between lpoints and upoints
     cost=inf(size(ulpoints,1),size(upoints,1));
@@ -114,18 +116,20 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%% HELPER FUNCTIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function smoothedTable=smoothTable(tableData)
-    N=ceil(height(tableData)/10);   
-    a=[smooth(tableData.x,N),smooth(tableData.y,N),smooth(tableData.z,N)];
-    varNames=tableData.Properties.VariableNames;
-    smoothedTable=array2table([tableData.Header a],'VariableNames',{'Header',varNames{2:end}});
+    %N=ceil(height(tableData)/10);   
+    %a=[smooth(tableData.x,N),smooth(tableData.y,N),smooth(tableData.z,N)];
+    %varNames=tableData.Properties.VariableNames;    
+    %smoothedTable=array2table([tableData.Header a],'VariableNames',{'Header',varNames{2:end}});
+    notnan=~any(isnan(tableData.Variables),2);
+    smoothedTable=tableData(notnan,:);
 end
 
 function markers=predictPosition(markers,frame,window)
     % For a marker set determine the position of the markers at a given
     % time.
     allmarkers=fieldnames(markers);
-    %Smooth first to make it better   
-    thisMarkers=Topics.processTopics(@smoothTable,markers,allmarkers,'Parallel',true);
+    %Smooth first to make it better %This is bad
+    thisMarkers=Topics.processTopics(@smoothTable,markers,allmarkers,'Parallel',true);    
     interpMarkers=Topics.interpolate(thisMarkers,frame,allmarkers);
     % Avoid extrapolating too far
     zoom=Topics.cut(markers,frame-window,frame+window);

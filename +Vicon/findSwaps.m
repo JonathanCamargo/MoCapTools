@@ -9,8 +9,6 @@ function intervals = findSwaps(allMarkers,varargin)
 %
 %  Options:
 %       VerboseLevel  - (0) minimal output, 1 normal, 2 debug mode
-%       MaxVelocity - (10)
-%       MaxAcceleration - (3)
 %       MinWidth - (1)  minimum width of section between velocity changes.%       
 %       intervals to the next/previous/(or both) sections of trajectory.
 %
@@ -18,6 +16,7 @@ function intervals = findSwaps(allMarkers,varargin)
 validScalar=@(x) isnumeric(x) && isscalar(x);
 p = inputParser;
 p.addParameter('Verbose',0, validScalar);
+p.addParameter('IncludeUnlabeled',false);
 %p.addParameter('MaxVelocity',30, validScalar);
 %p.addParameter('MaxAcceleration',3, validScalar);
 p.addParameter('MinWidth',3, validScalar);
@@ -27,6 +26,7 @@ p.addParameter('MinWidth',3, validScalar);
 %p.addParameter('GapMaxIterations',nan,@isnumeric);
 p.parse(varargin{:});
 Verbose = p.Results.Verbose;
+IncludeUnlabeled=p.Results.IncludeUnlabeled;
 
 %MaxVelocity= p.Results.MaxVelocity;
 %MaxAcceleration= p.Results.MaxAcceleration;
@@ -39,9 +39,16 @@ normacceleration=Topics.transform(@(x)vecnorm(x,2,2),acceleration);
 [allMarkerNames,unlabeledMarkers,unlabeledMarkerNames...
         ,labeledMarkers,labeledMarkerNames] = Vicon.MarkerCategories(allMarkers);
 
+if IncludeUnlabeled
+    markerNames=allMarkerNames;
+else
+    markerNames=labeledMarkerNames;
+end
+
 intervals=struct();
-for markerIdx=1:numel(labeledMarkerNames)
-    marker=labeledMarkerNames{markerIdx};       
+
+for markerIdx=1:numel(markerNames)
+    marker=markerNames{markerIdx};       
     
     header=velocity.(marker).Header;
     v=velocity.(marker){:,2:end}; a=acceleration.(marker){:,2:end}; 
@@ -57,8 +64,9 @@ for markerIdx=1:numel(labeledMarkerNames)
     %filteredacctang=abs(acctang-movmean(acctang,200));
     filteredacctang=acctang;
     idxa=isoutlier(filteredacctang,'median','ThresholdFactor',20);
-    idxa=(idxa & (filteredacctang>5));
-    idx=filterglitch((idxv | idxa),MinWidth);
+    idxa=(idxa & (filteredacctang>4));
+    idx=filterglitch((idxv | idxa),MinWidth);        
+    
     %{
     % plot    
     offset=2000;%20000;

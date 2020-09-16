@@ -1,4 +1,4 @@
-function allmarkers=FixSwaps(allmarkers,swapintervals,modelFile,varargin)
+function allmarkers=FixSwaps(allmarkers,swapintervals,varargin)
 % allmarkers=FixSwaps(allmarkers,swapintervals)
 % For the intervals that contain marker swaps evaluate the matches for
 % marker trajectories at the end of the swap intervals to relabel the
@@ -14,7 +14,7 @@ Verbose=p.Results.Verbose;
 M=p.Results.RelativeDistances;
 
 if isempty(M)    
-   M=Vicon.Label_ComputeDistances(allmarkers);
+   M=Vicon.Labeling.ComputeDistances(allmarkers);
 end
 
 [allnames,umarkers,unames,lmarkers,lnames]=Vicon.MarkerCategories(allmarkers);
@@ -24,8 +24,6 @@ endFrame=allmarkers.(allnames{1}).Header(end);
 
 % Unlabel swap interval so that we don't preserve faulty data
 [allmarkers,newUmarkers]=Vicon.Labeling.UnlabelIntervals(allmarkers,swapintervals);
-
-segmentMarkers=Vicon.getSegmentMarkers(modelFile);
 
 markers=fieldnames(swapintervals);
 for markerIdx=1:numel(markers)

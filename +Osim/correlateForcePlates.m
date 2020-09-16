@@ -10,6 +10,10 @@ function sides = correlateForcePlates(trcTable, fpTable,varargin)
 % the GRF file (ex. 'lrrrl' means the 1st and 5th force plates that appear
 % in the GRF file act on the left foot, and the other force plates act on
 % the right foot).
+% Optional Name-value pairs:
+% 'LeftMarkers', cell array of L foot markers e.g }{'L_Heel','L_Toe_Tip'}
+% 'RightMarkers', cell array of R foot markers}{'L_Heel','L_Toe_Tip'}
+% 
 
 p=inputParser();
 p.addParameter('LeftMarkers',{'L_Heel','L_Toe_Tip'},@iscell);

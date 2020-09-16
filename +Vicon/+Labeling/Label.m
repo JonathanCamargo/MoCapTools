@@ -63,6 +63,9 @@ if isempty(rsection.(rmarker)) || all(isnan(rsection.(rmarker){:,2:end}),'all')
     %Copy osection to rmarker 
     tbl=osection.(omarker);
     allMarkers=Topics.merge(allMarkers,struct(rmarker,tbl));
+    %Clear osection from omarker
+    tbl{:,2:end}=nan;
+    allMarkers=Topics.merge(allMarkers,struct(omarker,tbl));    
     return;
 end
 % Also when rsection is contained within osection.

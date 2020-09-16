@@ -1,7 +1,7 @@
 function x=filterglitch(x,minwidth)
 % x=filterglitch(x,minwidth)
-% For a logical signal produce a digital output that has low sections of 
-% a minimum width.
+% For a logical signal produce a digital output that has low or high
+% sections of a minimum width.
 
 isrow=false;
 if size(x,1)==1
@@ -21,7 +21,7 @@ lastidx=1;
 for i=1:numel(idx)
     curidx=idx(i);
     if ((curidx-lastidx)<minwidth)
-        x(lastidx:curidx)=x(lastidx);
+        x(lastidx:curidx)=x(max([lastidx,1]));
     elseif x(curidx)
         x(lastidx:curidx-1)=0;
     else
