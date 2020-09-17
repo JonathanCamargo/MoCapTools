@@ -130,7 +130,7 @@ function markers=predictPosition(markers,frame,window)
     allmarkers=fieldnames(markers);
     %Smooth first to make it better %This is bad
     thisMarkers=Topics.processTopics(@smoothTable,markers,allmarkers,'Parallel',true);    
-    interpMarkers=Topics.interpolate(thisMarkers,frame,allmarkers);
+    interpMarkers=Topics.interpolate(thisMarkers,frame,allmarkers,'Extrapolation',true);
     % Avoid extrapolating too far
     zoom=Topics.cut(markers,frame-window,frame+window);
     allnan=Topics.processTopics(@(x)(all(isnan(x{:,2:end}),'all')),zoom);
