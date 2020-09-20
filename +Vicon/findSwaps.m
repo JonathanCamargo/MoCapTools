@@ -99,7 +99,9 @@ function out=gradienty(tabledata)
    else
     x=tabledata{:,2:end};
    end
+   x(nanidx,:)=nan;
    [~,y]=gradient(x);
+   
    out=tabledata; out{:,2:end}=y;
 end
 
