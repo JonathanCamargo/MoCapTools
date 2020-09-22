@@ -1,4 +1,4 @@
-function allmarkers=FixSwaps(allmarkers,0swapintervals,varargin)
+function allmarkers=FixSwaps(allmarkers,modelFile,swapintervals,varargin)
 % allmarkers=FixSwaps(allmarkers,swapintervals)
 % For the intervals that contain marker swaps evaluate the matches for
 % marker trajectories at the end of the swap intervals to relabel the

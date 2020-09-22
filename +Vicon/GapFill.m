@@ -70,6 +70,7 @@ end
 %%
 
 if height(gapTable) == 0
+    markerData=Topics.merge(markerData,otherMarkers);
     warning('No gaps in markerdata. Are you sure you need to run gapfill?')
 else
     

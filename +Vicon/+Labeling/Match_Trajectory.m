@@ -59,7 +59,13 @@ function matches=Match_Trajectory(allmarkers,frame,varargin)
     m=Topics.select(section,ulnames);
     predicted=predictPosition(m,frame,MaxWindow);
     a=struct2cell(predicted); a=vertcat(a{:});
+    ulnames=fieldnames(predicted);
     ulpoints=a(:,2:end); 
+    
+    if isempty(ulpoints)
+        return;
+    end
+    
     ulpoints=ulpoints(~any(isnan(ulpoints.Variables),2),:);
     ulnames=ulnames(~any(isnan(ulpoints.Variables),2),:);
 
@@ -134,12 +140,11 @@ function markers=predictPosition(markers,frame,window)
     % Avoid extrapolating too far
     zoom=Topics.cut(markers,frame-window,frame+window);
     allnan=Topics.processTopics(@(x)(all(isnan(x{:,2:end}),'all')),zoom);
+    hasdata=Topics.processTopics(@(x)(size(x,1)),interpMarkers);
     for i=1:numel(allmarkers)
         marker=allmarkers{i};
-        if allnan.(marker)
-            a=interpMarkers.(marker);
-            a{:,2:end}=inf;
-            interpMarkers.(marker)=a;
+        if allnan.(marker) || ~hasdata.(marker)
+            interpMarkers=rmfield(interpMarkers,marker);            
         end
     end   
     markers=interpMarkers;     

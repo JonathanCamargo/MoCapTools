@@ -71,7 +71,7 @@ function intervals=ExtendBackward(intervals,isnanframe)
         if isempty(nextFrameIdx)
             nextFrame=isnanframe.Header(1);
         else
-            nextFrame=min([interval(1) isnanframe.Header(nextFrameIdx+1)]);
+            nextFrame=min([interval(1) isnanframe.Header(min([nextFrameIdx+1,size(isnanframe,1)]))]);
         end
         interval=[nextFrame interval(2)];
         intervals{i}=interval;
