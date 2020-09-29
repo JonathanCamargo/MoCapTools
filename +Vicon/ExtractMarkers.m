@@ -6,6 +6,7 @@ function markerData = ExtractMarkers(c3dFile)
 
     h = btkReadAcquisition(c3dFile);
     markerData = btkGetMarkers(h);
+    firstFrame=btkGetFirstFrame(h);
     btkCloseAcquisition(h);
     markers = fieldnames(markerData); 
     
@@ -13,7 +14,8 @@ function markerData = ExtractMarkers(c3dFile)
         marker = markers{idx};
         a=markerData.(marker);
         a(a==0)=nan;
-        markerData.(marker)=a;
-        markerData.(marker) = Vicon.transform(markerData.(marker), 'OsimXYZ');
+        a=Vicon.transform(a, 'OsimXYZ');
+        header=(firstFrame-1)+(1:size(a,1))';
+        markerData.(marker) = array2table([header,a],'VariableNames',{'Header','x','y','z'});
     end
 end

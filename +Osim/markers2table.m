@@ -5,11 +5,15 @@ function markerTable = markers2table(markerStruct)
 % 
 % markerTable = markers2table(markerStruct)
 
+    FS=200;
     assert(isstruct(markerStruct), 'Input must be a struct.');
-    data = structfun(@(x) {x}, markerStruct);
+    data = structfun(@(x) {x{:,2:end}}, markerStruct);
     data = [data{:}];
-    frame = (1:size(data, 1))';
-    time = (frame-1)/200;
+    
+    markerNames=fieldnames(markerStruct);
+    
+    frame = markerStruct.(markerNames{1}).Header;
+    time = (frame-1)/FS;
     data = [time, data];
     
     labels = fieldnames(markerStruct);

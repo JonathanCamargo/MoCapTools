@@ -19,6 +19,6 @@ function markerData = deleteFrames(markerData, markerNames, frames)
     markerNames = strrep(markerNames, '.', '_');
     for idx = 1:length(markerNames)
         marker = markerNames{idx};
-        markerData.(marker)(frames{idx}, :) = nan;
+        markerData.(marker){frames{idx}, :} = nan;
     end
 end
