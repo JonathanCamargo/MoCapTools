@@ -23,11 +23,19 @@ function matches=Match_RigidBody(allmarkers,frame,staticMarkers,segmentMarkers,v
     % for each segment in segmentMarkers compute the transformation from the 
     % static to thisFrame's pose.   
     thisSegmentMarkers=segmentMarkers;
-    x0tbl=Topics.consolidate(Topics.select(staticFrame,thisSegmentMarkers));
-    x0=x0tbl{:,2:end}; x0=reshape(x0,3,[]);
-    x1tbl=Topics.consolidate(Topics.select(thisFrame,thisSegmentMarkers));
+    x0tbl=Topics.consolidate(Topics.select(staticFrame,thisSegmentMarkers));   
+    thisMarkers=Topics.select(thisFrame,thisSegmentMarkers);
+    thisSegmentMarkers=fieldnames(thisMarkers);
+    x1tbl=Topics.consolidate(thisMarkers);
     x1=x1tbl{:,2:end}; x1=reshape(x1,3,[]);
-
+    x1cols=x1tbl.Properties.VariableNames(2:end);
+    x0=x0tbl{:,x1cols}; x0=reshape(x0,3,[]);
+    
+    % If not enough donor markers don't do a rigid body match
+    if numel(x1cols)/3<3
+        matches={};
+        return;
+    end   
 
     %%
     %x0=[0, 1, 0, 1; 0, 0 ,-1 ,-1; 0, 0 ,0 ,0 ];

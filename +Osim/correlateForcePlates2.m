@@ -81,6 +81,9 @@ for i=1:numel(fpnames)
    %Refine idx by looking into fpVmag if fp is provided
    if ~isempty(fp)
        %Get v_y for this fp
+       trial=struct('fp',fp);
+       trial=Topics.interpolate(trial,trctable.Header);
+       fp=trial.fp;
        fpchannels=fp.Properties.VariableNames;
        fpv=fp{:,contains(fpchannels,[fpname '_v'])};
        fpvmag=vecnorm(fpv,2,2);
