@@ -16,6 +16,18 @@ a=abs([0; diff(x)]);
 
 idx=find(a);
 
+intervals=[idx(1:end-1) idx(2:end)];
+width=diff(intervals,[],2);
+
+[sortedWidth,sortedIdx]=sort(width,'ascend');
+sortedIntervals=intervals(sortedIdx,:);
+
+for i=1:sum(sortedWidth<=minwidth)        
+    interval=sortedIntervals(i,:);
+    x(interval(1):interval(2))=x(interval(1)-1);
+end
+
+%{
 lastidx=1;
 
 for i=1:numel(idx)
@@ -29,6 +41,7 @@ for i=1:numel(idx)
     end
     lastidx=curidx;
 end
+%}
 
 if isrow
     x=x';

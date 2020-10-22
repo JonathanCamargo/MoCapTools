@@ -97,7 +97,7 @@ function matches=Match_RigidBody(allmarkers,frame,staticMarkers,segmentMarkers,v
     matchesA=thisSegmentMarkers(swapsIdx);
     matchesB=sorted_thisSegmentMarkers(swapsIdx);
 
-    allmatches=[matchesA' matchesB'];
+    allmatches=[matchesA matchesB];
 
     if isempty(allmatches)
         matches={};

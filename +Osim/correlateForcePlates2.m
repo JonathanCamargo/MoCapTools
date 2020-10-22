@@ -76,8 +76,10 @@ for i=1:numel(fpnames)
    plot(t,trcLocal(:,col)); hold on; plot(t,minLimits(:,col),'--');  plot(t,maxLimits(:,col),'--');
    %} 
    %%      
-   % Remove glitches
-   
+   % Remove glitches of markers going across the boundary but not staying
+   % long enough.
+   idx=filterglitch(idx,ceil(0.33*200));
+
    %Refine idx by looking into fpVmag if fp is provided
    if ~isempty(fp)
        %Get v_y for this fp
@@ -87,10 +89,18 @@ for i=1:numel(fpnames)
        fpchannels=fp.Properties.VariableNames;
        fpv=fp{:,contains(fpchannels,[fpname '_v'])};
        fpvmag=vecnorm(fpv,2,2);
-       idx=idx & (fpvmag>minVmag);
+       idxfp=(fpvmag>minVmag);
+       
+       % extend the intervals of fp 
+       idx_intervals=splitLogical(idx | idxfp);
+       for intervalIdx=1:numel(idx_intervals)
+          if ~any(idx(idx_intervals{intervalIdx}) & idxfp(idx_intervals{intervalIdx}))
+            idxfp(idx_intervals{intervalIdx})=0;
+          end
+       end
+       idx=idxfp; 
    end
 
-   idx=filterglitch(idx,ceil(0.33*200));
    fpnamesTbl.Forceplate(idx)=fpnames(i);  
 
               
@@ -99,7 +109,6 @@ end
    
 end
 
-%fpnamesTbl=fpnamesTbl(~cellfun(@isempty,fpnamesTbl.Forceplate),:);
 
  
 
