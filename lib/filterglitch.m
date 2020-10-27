@@ -28,6 +28,9 @@ end
 i=1; thisIntervalWidth=sortedWidth(i); 
 while (thisIntervalWidth<minwidth)
     thisIntervalWidth=sortedWidth(i); 
+    if (thisIntervalWidth>=minwidth)
+        break;
+    end
     interval=sortedIntervals(i,:);
     x(interval(1):interval(2))=x(interval(1)-1);
     s1=any(sortedIntervals(setdiff(1:sum(width<minwidth),i),2)==interval(1));
@@ -43,7 +46,7 @@ while (thisIntervalWidth<minwidth)
     else
         i=i+1;
     end 
-    if i>numel(sortedWith)
+    if i>numel(sortedWidth)
         break;
     end
 end
