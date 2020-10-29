@@ -20,8 +20,9 @@ function [emg, gon] = C3DtoBIO(c3dFile)
     biom2Idx = find(strcmp(channels, 'Voltage_11'));
     biom2Idx = biom2Idx:(biom2Idx+7);
     nRows = btkGetAnalogFrameNumber(c3dHandle);
-    t0 = btkGetFirstFrame(c3dHandle);
-    times = ((1:nRows) - 2 + t0)' / btkGetAnalogFrequency(c3dHandle);
+    % Assume that frist frame (usually frame1) is equivalent to time t=0
+    t0 = (btkGetFirstFrame(c3dHandle)-1)/btkGetPointFrequency(c3dHandle);    
+    times = t0+(((1:nRows) - 1 )' / btkGetAnalogFrequency(c3dHandle));
     times = array2table(times);
     times.Properties.VariableNames = {'Header'};
     
