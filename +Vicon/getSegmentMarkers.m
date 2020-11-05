@@ -3,6 +3,8 @@ function out=getSegmentMarkers(vskFile)
 % returns a structure with all the  
 % out=Vicon.getSegmentMarkers(vskFile)
 
+warning(['Vicon.getSegmentMarkers will be renamed to Vicon.model.getSegmentMarkers, please', ...
+'update']);
 modelFile=vskFile;
 
 

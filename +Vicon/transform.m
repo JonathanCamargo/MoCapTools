@@ -9,6 +9,7 @@ function arraydata = transform(arraydata,format)
 % format can be 'OsimXYZ' to transform from Vicon to Osim
 %               'ViconXYZ' to transform from Osim to Vicon
 %               R (matrix)    an arbirary 3x3 rotation matrix
+%               H (matrix)    and arbitrary 4x4 SE(3) transformation matrix
 % To transform table data that has a column for time: 
 % tabledata{:, 2:end} = Vicon.transform(tabledata{:, 2:end}, format);
 % 
@@ -23,13 +24,19 @@ function arraydata = transform(arraydata,format)
     if ~isnumeric(format)
         if strcmpi(format,'OsimXYZ')
             rot3=rot_VICtoOSIM;
+            translation=[0,0,0]';
         elseif  strcmpi(format,'ViconXYZ')
             rot3=rot_VICtoOSIM';
+            translation=[0,0,0]';
         else
             error('Reference system format not supported');
         end
-    else
+    elseif all(size(format)==[3,3])
         rot3=format;
+        translation=[0,0,0]';
+    elseif all(size(format)==[4,4])
+        rot3=format(1:3,1:3);
+        translation=format(1:3,4);
     end
     % construct a block diagonal matrix that has rot3 on the main diagonal,
     % with nPoints many copies so that we can transform all points at once
@@ -41,6 +48,6 @@ function arraydata = transform(arraydata,format)
     rotMatrix = blkdiag(rotMatrix{:});    
     nanIdx=isnan(arraydata);
     arraydata(nanIdx)=0;
-    arraydata = arraydata * rotMatrix; 
+    arraydata = arraydata * rotMatrix + repmat(translation',size(arraydata,1),nPoints); 
     arraydata(nanIdx)= NaN;
 end

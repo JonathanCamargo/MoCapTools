@@ -3,6 +3,11 @@ function markerData = ExtractMarkers(c3dFile)
 % and each field contains an nx3 array of point data for n frames. Any
 % missing marker data is represented as NaN instead of with zeros.
 % markerData = Vicon.ExtractMarkers(c3dFile)
+% 
+% By default ExtractMarkers provides coordinates in OsimXYZ convention. Use
+% Vicon.transform to change the coordinate frames.
+%
+% See also Vicon.transform
 
     h = btkReadAcquisition(c3dFile);
     markerData = btkGetMarkers(h);
