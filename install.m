@@ -1,7 +1,7 @@
 !synclient HorizEdgeScroll=0 HorizTwoFingerScroll=0
 clc; clear; close all;
 
-fprintf('Installing sf_pre...\n');
+fprintf('Installing MocapTools...\n');
 
 %% Add the paths as needed
 addpath(genpath('extlib'));
