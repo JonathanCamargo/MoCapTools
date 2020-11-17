@@ -116,10 +116,15 @@ else
                     warning('Spline-filling Large gap');
                 end
             end
-            markerData = Vicon.SplineFill(markerData, gapTable.Markers{1}, gapTable.Start(1), gapTable.End(1));
-            spFills = spFills + 1;
-            gapTable = genGapTable(markerData);
-            change = true;
+            [markerData,err] = Vicon.SplineFill(markerData, gapTable.Markers{1}, gapTable.Start(1), gapTable.End(1));
+            if ~err
+                spFills = spFills + 1;
+                gapTable = genGapTable(markerData);                
+                change = true;
+            else
+                change=false;
+                unFilledGaps=height(gapTable);
+            end            
         end
     end
     %delete(h);
@@ -128,8 +133,14 @@ else
             '   %d gaps filled with pattern fill.\n' ...
             '   %d gaps filled with spline fill.\n' ...
             '   %d one-frame gaps filled with spline fill.\n'], rbFills, ptFills, spFills, shortSpFills);
+        if unFilledGaps>0
+            fprintf(' %d gaps could not be filled\n',unFilledGaps);
+        end
     else
         fprintf('   %d gaps filled\n', rbFills + ptFills + spFills + shortSpFills);
+        if unFilledGaps>0
+            warning(' %d gaps could not be filled\n',unFilledGaps);
+        end
     end
 end
 end
