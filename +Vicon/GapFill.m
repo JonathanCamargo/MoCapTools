@@ -128,6 +128,7 @@ else
         end
     end
     %delete(h);
+    unFilledGaps=height(gapTable);
     if verboseLevel > 0
         fprintf(['   %d gaps filled with rigid body fill.\n' ...
             '   %d gaps filled with pattern fill.\n' ...

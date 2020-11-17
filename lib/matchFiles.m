@@ -1,4 +1,4 @@
-function files = matchFiles(varargin)
+function files = matchfiles(varargin)
 % files = matchFiles(dirArg)
 % files = matchFiles(filepart1, ..., filepartN)
 % Returns a cell array containing the full path of all files and folders
