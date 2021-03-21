@@ -147,7 +147,7 @@ if (CleanLabels)
     end
 
     intervals=Topics.findTimes(@(x)(x.Distance>(4*std(x.Distance)+mean(x.Distance))),difference,labeledMarkerNames);
-    [cleanedMarkers, newUnlabeledMarkers]=Vicon.unlabelIntervals(allMarkers,intervals);
+    [cleanedMarkers, newUnlabeledMarkers]=Vicon.Labeling.UnlabelIntervals(allMarkers,intervals);
     allMarkers=Topics.merge(cleanedMarkers,newUnlabeledMarkers);
 
     if (VerboseLevel==1)
@@ -190,7 +190,7 @@ if (CleanLabels)
     
     if ~isempty(unlabeledMarkerNames)
         intervals=Topics.findTimes(@HighVelocityCondition,unlabeledMarkers,unlabeledMarkerNames);
-        [cleanedMarkers,newUnlabeledMarkers]=Vicon.unlabelIntervals(allMarkers,intervals);
+        [cleanedMarkers,newUnlabeledMarkers]=Vicon.Labeling.UnlabelIntervals(allMarkers,intervals);
         allMarkers=Topics.merge(cleanedMarkers,newUnlabeledMarkers);
 
         % Save the output to check
