@@ -41,7 +41,7 @@ markers = fieldnames(markerData);
 if endsWith(modelFile, '.osim')
     segments = Osim.model.getSegmentMarkers(modelFile);
 elseif endsWith(modelFile, '.vsk')
-    segments = Vicon.getSegmentMarkers(modelFile);
+    segments = Vicon.model.getSegmentMarkers(modelFile);
 else
     error('Could not identify segment information from osim model.');
 end
