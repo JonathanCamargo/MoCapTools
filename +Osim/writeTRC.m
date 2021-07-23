@@ -62,8 +62,8 @@ function trcFile = writeTRC(trcTable, varargin)
 	text{2} = strjoin({'DataRate','CameraRate','NumFrames','NumMarkers','Units','OrigDataRate','OrigDataStartFrame','OrigNumFrames'}, '\t');
     text{3} = sprintf('%4$d	%4$d	%1$d	%2$d	mm	%4$d	%3$d	%1$d	', size(data, 1), nMarkers, data(1, 1), fs);
     
-    varNames = [{'Frame#','Time'},markerNames];
-    text{4} = sprintf('%s\t', strjoin(varNames, '\t'));
+    markerCols = strjoin(markerNames, '\t\t\t');
+	text{4} = sprintf('Frame#\t Time\t %s', markerCols);
     
     coordHeaders = compose('X%d\tY%d\tZ%d\t', repmat((1:nMarkers)',1, 3));
     
