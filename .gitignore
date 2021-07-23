@@ -1,11 +1,4 @@
 *.log
-*.mat
 *.asv
-*.mot
-*.trc
-*.fp
-*.c3d
-*.sto
-*.xml
-*.osim
-*.png
+*.out
+*.err

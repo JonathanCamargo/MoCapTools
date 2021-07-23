@@ -177,6 +177,9 @@ else
             '   %d short gaps (len<%d) filled with spline fill.\n'], rbFills, ptFills, spFills, shortSpFills,SHORTGAP);
     else
         fprintf('   %d gaps filled\n', rbFills + ptFills + spFills + shortSpFills);
+        if unFilledGaps>0
+            warning(' %d gaps could not be filled\n',unFilledGaps);
+        end
     end
 end
 end
