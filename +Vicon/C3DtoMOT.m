@@ -1,9 +1,9 @@
 function mot = C3DtoMOT(c3dFile, varargin)
+% mot = C3DtoMOT(c3dFile, varargin)
 % Exports filtered force plate data from a C3D file and returns a table
 % containing the data. The data is expressed in OpenSim coordinte frame
 % (i.e Y is up), you can use Vicon.transform to change the data to other 
 % orientations.
-% [motTable,cornersTbl] = Vicon.C3DtoMOT(c3dFile, varargin)
 %
 % c3dFile is the file that data will be exported from. 
 % Optional Inputs: 

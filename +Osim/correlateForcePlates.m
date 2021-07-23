@@ -10,6 +10,10 @@ function sides = correlateForcePlates(trcTable, fpTable,varargin)
 % the GRF file (ex. 'lrrrl' means the 1st and 5th force plates that appear
 % in the GRF file act on the left foot, and the other force plates act on
 % the right foot).
+% Optional Name-value pairs:
+% 'LeftMarkers', cell array of L foot markers e.g }{'L_Heel','L_Toe_Tip'}
+% 'RightMarkers', cell array of R foot markers}{'L_Heel','L_Toe_Tip'}
+% 
 
 p=inputParser();
 p.addParameter('LeftMarkers',{'L_Heel','L_Toe_Tip'},@iscell);
@@ -22,14 +26,10 @@ RightMarkers=p.Results.RightMarkers;
 %% update trc and fp to have same time scale
 fpTable = Osim.interpret(fpTable, 'MOT');
 trcTable = Osim.interpret(trcTable, 'TRC');
-
-
-fpData=interp1(fpTable.Header, fpTable{:,2:end},trcTable.Header);
-fpTable=array2table([trcTable.Header,fpData],'VariableNames',fpTable.Properties.VariableNames);
-%trialData.FP = fpTable;
-%trialData.TRC = trcTable;
-% trialData = Topics.interpolate(trialData, trialData.TRC.Header, {'FP'});
-%fpTable = trialData.FP;
+trialData.FP = fpTable;
+trialData.TRC = trcTable;
+trialData = Topics.interpolate(trialData, trialData.TRC.Header, {'FP'});
+fpTable = trialData.FP;
 
 %% Get Marker Data
     % which marker do we want to use as representing the position of the

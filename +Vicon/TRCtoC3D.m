@@ -18,7 +18,21 @@ function c3dFileOut = TRCtoC3D(markerTable, c3dFileOrig, c3dFileOut)
         c3dFileOut = [c3dFileOut '.c3d'];
     end
     markerTable = Osim.interpret(markerTable, 'TRC');
+    
+    header=markerTable.Header;   
     c3dHandle = btkReadAcquisition(c3dFileOrig);
+    
+    if any(~isinteger(diff(header)))
+        dT=mean(diff(header));
+        sectionFrames=round(header/dT)+1;
+        % header is time     
+        % originalFrames = (btkGetFirstFrame(c3dHandle):btkGetLastFrame(c3dHandle))';
+        btkSetFirstFrame(c3dHandle,sectionFrames(1));
+        btkSetFrameNumber(c3dHandle,sectionFrames(end)-sectionFrames(1)+1);                                        
+    end
+    
+    
+    
     data = markerTable{:, 2:end};
     data = Vicon.transform(data, 'ViconXYZ');
     labels = markerTable.Properties.VariableNames;

@@ -1,8 +1,10 @@
 function out=getSegmentMarkers(vskFile)
-% Get marker structure from vsk model file to be used for gap filling
-% 
+% Get marker structure from vsk model file
+% returns a structure with all the  
 % out=Vicon.getSegmentMarkers(vskFile)
 
+warning(['Vicon.getSegmentMarkers will be renamed to Vicon.model.getSegmentMarkers, please', ...
+'update']);
 modelFile=vskFile;
 
 
@@ -39,3 +41,13 @@ for i = 1:length(names)
         out.(out.(names{i}){j}) = names{i};
     end
 end
+
+%{
+%% Get the markers from the vsk file
+parameters=doc.getElementsByTagName('Parameter');
+for i=0:parameters.getLength-1
+    marker=parameters.item(i);
+    markerName=marker.getAttribute('NAME');
+    markerName=strrep(char(markerName),'.','_');
+end
+%}

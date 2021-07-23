@@ -1,7 +1,11 @@
 !synclient HorizEdgeScroll=0 HorizTwoFingerScroll=0
 clc; clear; close all;
 
-fprintf('Installing MocapTools...\n');
+fprintf('Installing MoCapTools...\n');
+
+currentfiles=dir();
+currentfiles={currentfiles(:).name};
+assert(any(contains(currentfiles,'+Vicon')),'You must run install.m from MoCapTools final location. Aborting installation.');
 
 %% Add the paths as needed
 addpath(genpath('extlib'));
@@ -41,7 +45,7 @@ catch
         if isequal(e.identifier, 'MATLAB:FileIO:InvalidFid')
             warning('You may need to run install() as admin.');
         end
-        error('Could not install sf_pre. Is OpenSim installed?');
+        error('Could not verify OpenSim functionality. Is OpenSim installed?');
     end
 end
 

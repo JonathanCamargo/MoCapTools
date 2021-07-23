@@ -1,12 +1,20 @@
-function trc = C3DtoTRC(c3dFile)
-% Exports TRC data from a C3D file and produce a table. Data is in OpenSim
-% coordinate system.
+function trc = C3DtoTRC(c3dFile,varargin)
 % trcOutputFile = Vicon.C3DtoTRC(c3dFile)
+% Exports TRC data from a C3D file and produce a table. 
 % c3dFile is the file that data will be exported from. 
+% By default data is in OpenSim coordinate system i.e. y-axis up, use
+% second argument to specify the coordinates between 'OsimXYZ'(default) or 
+% 'ViconXYZ'
 
-    narginchk(1,1);
+
+    narginchk(1,2);
     assert(ischar(c3dFile));
     
+    p=inputParser();
+    p.addOptional('Transform','OsimXYZ',@(x)any(strcmp(x,{'OsimXYZ','ViconXYZ'})));
+    p.parse(varargin{:});
+    
+    Transform=p.Results.Transform;
     c3dHandle = btkReadAcquisition(c3dFile);
     
     samplingFreq = btkGetPointFrequency(c3dHandle);
@@ -16,7 +24,10 @@ function trc = C3DtoTRC(c3dFile)
     nPoints = btkGetPointNumber(c3dHandle);
     btkCloseAcquisition(c3dHandle);
     markerData(markerData == 0) = nan;
-    markerData = Vicon.transform(markerData, 'OsimXYZ');
+    
+    if strcmp(Transform,'OsimXYZ') %Transform to OpenSim coordinates 
+        markerData = Vicon.transform(markerData, Transform);
+    end
     
     labels = meta.children.POINT.children.LABELS.info.values;
 	times = (frames-1)/samplingFreq;
