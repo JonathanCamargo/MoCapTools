@@ -3,8 +3,9 @@ function plot(vskFile,varargin)
 % plot(vskFile,trc)
 % plot(vskFile,trc,sticks)
 
+istableorstruct=@(x)(istable(x) || isstruct(x));
 p=inputParser();
-p.addRequired('trc',@istable);
+p.addRequired('trc',istableorstruct);
 p.addOptional('sticks',{},@iscell);
 p.parse(varargin{:});
 
@@ -47,6 +48,3 @@ end
 
 
 end
-
-
-

@@ -23,7 +23,7 @@ function trc = C3DtoTRC(c3dFile,varargin)
     markerData = btkGetMarkersValues(c3dHandle);
     nPoints = btkGetPointNumber(c3dHandle);
     btkCloseAcquisition(c3dHandle);
-    markerData(markerData == 0) = nan;
+    % markerData(markerData == 0) = nan; Force a marker to be a nan if it is exactly 0
     
     if strcmp(Transform,'OsimXYZ') %Transform to OpenSim coordinates 
         markerData = Vicon.transform(markerData, Transform);
