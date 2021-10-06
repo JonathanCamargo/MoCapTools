@@ -5,7 +5,7 @@ function markerStruct = table2markers(markerTable)
 % 
 % markerStruct = table2markers(markerTable)
 
-    FS=200;
+    FS=200; %This should be a parameter
     assert(istable(markerTable), 'Input must be a table.');
     data = markerTable.Variables;
     labels = markerTable.Properties.VariableNames;
@@ -27,6 +27,6 @@ function markerStruct = table2markers(markerTable)
     end
     markerStruct = struct();
     for idx = 1:3:size(data, 2)
-        markerStruct.(strrep(labels{idx}, '_x', '')) = array2table([round(markerTable.Header*FS+1) data(:, idx:idx+2)],'VariableNames',{'Header','x','y','z'});
+        markerStruct.(strrep(labels{idx}, '_x', '')) = array2table([round(markerTable.Header*FS+1) data(:, idx:idx+2)],'VariableNames',{'Header','x','y','z'});    
     end
 end

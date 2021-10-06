@@ -19,6 +19,18 @@ function trcTable = readTRC(file)
     markers = strsplit(l, '\t');
     data = dlmread(file, '\t', 5, 0);
     
+    if sum(data(:,end)) == 0 % delete last column of data if empty
+        data(:,end) = [];
+    end
+    
+    if sum(data(1, :)) == 0
+        data(1, :) = [];
+    end
+    
+    if isempty(markers{end}) % delete last column of marker names if empty
+        markers(end) = []; 
+    end
+    
     % get the subject ID
     % this will return some garbage if there is no subject id, but it won't
     % mess up the file
@@ -27,13 +39,13 @@ function trcTable = readTRC(file)
     % if there was no subject ID to start with, strrep will not find any
     % matches for [subjectID ':'] and won't replace anything
     markers = strrep(markers, [subjectID ':'], '');
-    labels = markers(3:end-1);
+    labels = markers(3:end);
     labels = labels(:);
     out = array2table(data(:,2:end));
     
     colNames = compose('%s_%c', string(labels), 'xyz')';
     
-    varNames = [{'Header'}, colNames(:)'];
+    varNames = [{'Time'}, colNames(:)'];
     
     out.Properties.VariableNames = varNames;
     
