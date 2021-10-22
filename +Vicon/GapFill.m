@@ -38,27 +38,34 @@ EnableLong=p.Results.EnableLong;
 
 markers = fieldnames(markerData);
 
+noModelFill=false;
 if endsWith(modelFile, '.osim')
     segments = Osim.model.getSegmentMarkers(modelFile);
 elseif endsWith(modelFile, '.vsk')
     segments = Vicon.model.getSegmentMarkers(modelFile);
+elseif strcmp(modelFile,'') % To attempt fill without using any model information
+    noModelFill=true;
 else
     error('Could not identify segment information from osim model.');
 end
-[~, valid_marker, ~] = intersect(fieldnames(markerData),fieldnames(segments));
 
-% remove markers in markerData which are not attached to a segment
-otherMarkers = rmfield(markerData,markers(valid_marker));
-markerData = rmfield(markerData, setdiff(markers, markers(valid_marker)));
+if ~noModelFill
+    [~, valid_marker, ~] = intersect(fieldnames(markerData),fieldnames(segments));
+    % remove markers in markerData which are not attached to a segment
+    otherMarkers = rmfield(markerData,markers(valid_marker));
+    markerData = rmfield(markerData, setdiff(markers, markers(valid_marker)));
 
-% remove references to markers with no data (medials) from segments struct
-markersWithNoData = setdiff(fieldnames(segments), fieldnames(markerData));
-for idx = 1:length(markersWithNoData)
-    marker = markersWithNoData{idx};
-    seg = segments.(marker);
-    if ischar(seg)
-        segments.(seg) = setdiff(segments.(seg), marker);
+    % remove references to markers with no data (medials) from segments struct
+    markersWithNoData = setdiff(fieldnames(segments), fieldnames(markerData));
+    for idx = 1:length(markersWithNoData)
+        marker = markersWithNoData{idx};
+        seg = segments.(marker);
+        if ischar(seg)
+            segments.(seg) = setdiff(segments.(seg), marker);
+        end
     end
+else
+    otherMarkers=struct();
 end
 
 isGapTableArg=true;
@@ -177,9 +184,6 @@ else
             '   %d short gaps (len<%d) filled with spline fill.\n'], rbFills, ptFills, spFills, shortSpFills,SHORTGAP);
     else
         fprintf('   %d gaps filled\n', rbFills + ptFills + spFills + shortSpFills);
-        if unFilledGaps>0
-            warning(' %d gaps could not be filled\n',unFilledGaps);
-        end
     end
 end
 end
