@@ -35,9 +35,11 @@ for i = 1:size(sticks,1)
     if mean(colorcito)>0.9
         colorcito=[0.5,0.5,0.5];
     end
-    m1=markers.(marker1);
-    m2=markers.(marker2);
-    plot3([m1.x;m2.x],[m1.y;m2.y],[m1.z;m2.z],'Color',colorcito); hold on;
+    if isfield(markers,marker1) && isfield(markers,marker2)
+        m1=markers.(marker1);
+        m2=markers.(marker2);
+        plot3([m1.x;m2.x],[m1.y;m2.y],[m1.z;m2.z],'Color',colorcito); hold on;
+    end
 end
 
 

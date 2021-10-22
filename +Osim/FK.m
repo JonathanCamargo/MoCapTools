@@ -141,6 +141,13 @@ for row_idx=1:height(ik)
     
 end
 
+if strcmp(outputType, 'H')   
+    tableHeaders = compose('%s_%c', string(objectNames), 'H')';
+    tableHeaders = tableHeaders(:)';
+    fkTable=array2table(Hcell,'VariableNames',tableHeaders);
+    fkTable.Header=ik.Header;
+end
+
 %% Generate the as table with position using TRC table format
 if strcmp(outputType, 'xyz')
     tableHeaders = compose('%s_%c', string(objectNames), 'xyz')';
