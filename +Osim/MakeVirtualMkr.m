@@ -17,13 +17,12 @@ if exist('StaticMarkerFile', 'var') == 0
     [StaticMarkerFile, ~]=uigetfile('*.trc','Select Static Calibration Trial');
 end
 
-% if exist('Dir', 'var') == 0
-%     [filepath, ~, ~] = fileparts(StaticMarkerFile);
-% end
-
 if exist('file2write', 'var') == 0
     file2write = [StaticMarkerFile(1:end-4) '_Virtual.trc'];
 end
+
+% specify floor height (even floor height = 0) in mm
+FloorLvl = -50; 
 
 %% Load Static TRC file
 trc = Osim.readTRC(StaticMarkerFile); 
@@ -111,48 +110,48 @@ A(:,:,1) = R.Ankle;
 A(:,:,2) = R.MAnkle;
 R.AJC = mean(A, 3);
 
-% for floor markers, set Y coords to 0 (putting them on the floor)
+% for floor markers, set Y coords to floor level
 % AJC floor
 L.AJC_Floor = L.AJC;
-L.AJC_Floor(:,2) = 0;
+L.AJC_Floor(:,2) = FloorLvl;
 R.AJC_Floor = R.AJC;
-R.AJC_Floor(:,2) = 0;
+R.AJC_Floor(:,2) = FloorLvl;
 
 % heel floor
 S = {'L.Heel','LHEE'}; 
 Ind = contains(MkrNames, S);
 L.Heel = trcData(:,Ind);
 L.Heel_Floor = L.Heel;
-L.Heel_Floor(:,2) = 0;
+L.Heel_Floor(:,2) = FloorLvl;
 S = {'R.Heel','RHEE'}; 
 Ind = contains(MkrNames, S);
 R.Heel = trcData(:,Ind);
 R.Heel_Floor = R.Heel;
-R.Heel_Floor(:,2) = 0;
+R.Heel_Floor(:,2) = FloorLvl;
 
 % MT1 floor
 S = {'L.MT1','LMT1'}; 
 Ind = contains(MkrNames, S);
 L.MT1 = trcData(:,Ind);
 L.MT1_Floor = L.MT1;
-L.MT1_Floor(:,2) = 0;
+L.MT1_Floor(:,2) = FloorLvl;
 S = {'R.MT1','RMT1'}; 
 Ind = contains(MkrNames, S);
 R.MT1 = trcData(:,Ind);
 R.MT1_Floor = R.MT1;
-R.MT1_Floor(:,2) = 0;
+R.MT1_Floor(:,2) = FloorLvl;
 
 % MT5 floor
 S = {'L.MT5','LMT5'}; 
 Ind = contains(MkrNames, S);
 L.MT5 = trcData(:,Ind);
 L.MT5_Floor = L.MT5;
-L.MT5_Floor(:,2) = 0;
+L.MT5_Floor(:,2) = FloorLvl;
 S = {'R.MT5','RMT5'}; 
 Ind = contains(MkrNames, S);
 R.MT5 = trcData(:,Ind);
 R.MT5_Floor = R.MT5;
-R.MT5_Floor(:,2) = 0;
+R.MT5_Floor(:,2) = FloorLvl;
 
 % MidMT floor
 A(:,:,1) = L.MT1_Floor;

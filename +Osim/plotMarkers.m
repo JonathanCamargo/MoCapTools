@@ -27,7 +27,7 @@ Markers(contains(Markers,Strings2Del)) = [];
 %% Plot first row
 MkrSz = 20;
 FntSz = 6;
-figure('Position',[100 100 900 800]);
+h = figure('Position',[100 100 900 800]);
 hold on; grid on;
 
 for i = 1:length(Markers)
@@ -39,23 +39,6 @@ end
 
 axis equal;
 title(FileName);
-
-
-%% Make Video
-if MakeVid == 0
-    saveas([FileName(1:end-4) '.png']);
-else
-    close;
-    [m,~] = size(TRCdata);
-    if m > 1 && MakeVid == 1
-        
-        
-        
-        
-        
-        
-        
-    end
-    
+saveas(h, [FileName(1:end-4) '.png']);   
     
 end

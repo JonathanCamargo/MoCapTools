@@ -109,13 +109,19 @@ LTRef = meanTRC(contains(Markers, LTMarks));
 D = dir(Dir(1:end-1));
 Dt = struct2table(D);
 Dc = table2cell(Dt);
-Rind = strcmp('RHJC_1.trc', Dc(:,1));
+% Rind = strcmp('RHJC_1.trc', Dc(:,1));
+Rind = strcmp('rhjc_1.trc', Dc(:,1));
 if sum(Rind) == 0
+    Rind = strcmp('RHJC_1.trc', Dc(:,1));
+elseif sum(Rind) == 0 
     Rind = strcmp('R_HJC_1.trc', Dc(:,1));
 end
 RhjcFile = Dc{Rind};
-Lind = strcmp('LHJC_1.trc', Dc(:,1));
+Lind = strcmp('lhjc_1.trc', Dc(:,1));
+% Lind = strcmp('LHJC_1.trc', Dc(:,1));
 if sum(Lind) == 0
+    Lind = strcmp('LHJC_1.trc', Dc(:,1));
+elseif sum(Rind) == 0 
     Lind = strcmp('L_HJC_1.trc', Dc(:,1));
 end
 LhjcFile = Dc{Lind};
@@ -172,19 +178,7 @@ for j=1:length(filesAddHJC)
         sacral = trcData(i, contains(Markers, 'S2'))';
     end
     
-%     figure; hold on; 
-%     plot3(rasis(1), rasis(2), rasis(3), '.');
-%     text(rasis(1), rasis(2), rasis(3),'rasis'); 
-%     plot3(lasis(1), lasis(2), lasis(3), '.');
-%     text(lasis(1), lasis(2), lasis(3),'lasis'); 
-%     plot3(sacral(1), sacral(2), sacral(3), '.');
-%     text(sacral(1), sacral(2), sacral(3),'sacral'); 
-%     plot3(rpsis(1), rpsis(2), rpsis(3), '.');
-%     text(rpsis(1), rpsis(2), rpsis(3),'rpsis'); 
-%     plot3(lpsis(1), lpsis(2), lpsis(3), '.');
-%     text(lpsis(1), lpsis(2), lpsis(3),'lpsis'); 
-%     axis equal; 
-
+   
     % create pelvis coodinate system
     midasis = (lasis+rasis)/2;
     y = lasis-rasis;
@@ -208,6 +202,7 @@ for j=1:length(filesAddHJC)
     r_hjc = zeros(m, 3);
     l_hjc = zeros(m, 3);
     time = zeros(m, 1);
+    
 
     % get all pelvis markers
     marks = trcData(:, contains(Markers, PelvMarks));
@@ -225,6 +220,25 @@ for j=1:length(filesAddHJC)
 
         time(i,1) = i/sampFreq - 1/sampFreq; % time array
     end
+    
+     figure; hold on; 
+    plot3(rasis(1), rasis(2), rasis(3), '.');
+    text(rasis(1), rasis(2), rasis(3),'rasis'); 
+    plot3(lasis(1), lasis(2), lasis(3), '.');
+    text(lasis(1), lasis(2), lasis(3),'lasis'); 
+    plot3(sacral(1), sacral(2), sacral(3), '.');
+    text(sacral(1), sacral(2), sacral(3),'sacral'); 
+%     plot3(rpsis(1), rpsis(2), rpsis(3), '.');
+%     text(rpsis(1), rpsis(2), rpsis(3),'rpsis'); 
+%     plot3(lpsis(1), lpsis(2), lpsis(3), '.');
+%     text(lpsis(1), lpsis(2), lpsis(3),'lpsis'); 
+
+    plot3( r_hjc(1),  r_hjc(2),  r_hjc(3), '.');
+    text( r_hjc(1),  r_hjc(2),  r_hjc(3),'rhjc'); 
+    plot3( l_hjc(1), l_hjc(2), l_hjc(3), '.');
+    text(l_hjc(1), l_hjc(2), l_hjc(3),'lhjc'); 
+    axis equal; 
+    
 
     Markers{1} = 'Header';
     trcTable = array2table([trcData r_hjc l_hjc]);
