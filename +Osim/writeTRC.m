@@ -19,16 +19,16 @@ function trcFile = writeTRC(trcTable, varargin)
     narginchk(1, 5);
     trcTable = Osim.interpret(trcTable, 'TRC');
 	
-	p=inputParser;
-	validScalar=@(x) isnumeric(x) && isscalar(x);
+	p = inputParser;
+	validScalar = @(x) isnumeric(x) && isscalar(x);
 	addRequired(p,'trcTable',@istable);
-    defaultFilePath=[tempname() '.trc'];	
+    defaultFilePath = [tempname() '.trc'];	
     addParameter(p,'FilePath',defaultFilePath,@ischar);
 	addParameter(p,'FilterFreq',6,validScalar);
 
 	parse(p,trcTable,varargin{:});
-    filterFreq=p.Results.FilterFreq;
-    trcFile=p.Results.FilePath;
+    filterFreq = p.Results.FilterFreq;
+    trcFile = p.Results.FilePath;
     
     if ~endsWith(trcFile, '.trc')
         trcFile = [trcFile '.trc'];
@@ -43,8 +43,8 @@ function trcFile = writeTRC(trcTable, varargin)
     end
     
     % Adapt the table to be Frame and time
-	frames=array2table((0:1:length(trcTable.Header)-1)','VariableNames',{'Frame'});		        
-	fullTable=[frames,trcTable];    
+	frames = array2table((0:1:length(trcTable.Header)-1)','VariableNames',{'Frame'});		        
+	fullTable = [frames,trcTable];    
 	fs = 1/mean(diff(trcTable.Header));
     
     data = fullTable.Variables;
@@ -62,8 +62,8 @@ function trcFile = writeTRC(trcTable, varargin)
 	text{2} = strjoin({'DataRate','CameraRate','NumFrames','NumMarkers','Units','OrigDataRate','OrigDataStartFrame','OrigNumFrames'}, '\t');
     text{3} = sprintf('%4$d	%4$d	%1$d	%2$d	mm	%4$d	%3$d	%1$d	', size(data, 1), nMarkers, data(1, 1), fs);
     
-    markerCols = strjoin(markerNames, '\t\t\t');
-	text{4} = sprintf('Frame#\t Time\t %s', markerCols);
+    markerCols = strjoin(markerNames,  '\t\t\t');
+    text{4} = sprintf('Frame#\t Time\t %s', markerCols);
     
     coordHeaders = compose('X%d\tY%d\tZ%d\t', repmat((1:nMarkers)',1, 3));
     
