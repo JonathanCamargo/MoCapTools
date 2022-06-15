@@ -31,7 +31,7 @@ function [markerData,err] = SplineFill(markerData, markerToFill, t0, t1,varargin
     y = x{framesToKeep,2:end};
     t = t(framesToKeep);
     
-    a=interp1(t,y,(t0:t1),'pchip');    
+    a=interp1(t,y,header(t0_idx:t1_idx),'pchip');    
     
     %Safeguard do not spline fill if there is a sudden jump from t0 to t1    
     erForward=inf; erBackward=inf;

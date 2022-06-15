@@ -19,12 +19,12 @@ catch
     try
         fprintf('Adding OpenSim libraries to path\n');
         osimPath=fullfile('C:/Users/', getenv('username'), '/Documents/OpenSim/*/Code/Matlab');
-        scripts=matchFiles(osimPath, 'configureOpenSim.m');
+        scripts=matchfiles(osimPath, 'configureOpenSim.m');
         if isempty(scripts)
             fprintf('OpenSim scripts not found in %s\nSearching in %s\n', osimPath, fullfile('C:\OpenSim*\'));
-            scripts = matchFiles('C:/Opensim*/**/configureOpenSim.m');
+            scripts = matchfiles('C:/Opensim*/**/configureOpenSim.m');
             if isempty(scripts)
-                resourcesZip = matchFiles('C:/OpenSim*/Resources.zip');
+                resourcesZip = matchfiles('C:/OpenSim*/Resources.zip');
                 if isempty(resourcesZip)
                     error('Could not find script configureOpenSim.m');
                 end
@@ -32,7 +32,7 @@ catch
                 fprintf('Unzipping %s\n', resourcesZip);
                 resources = fullfile(fileparts(resourcesZip), 'Resources');
                 unzip(resourcesZip, resources);
-                scripts = matchFiles('C:/Opensim*/**/configureOpenSim.m');
+                scripts = matchfiles('C:/Opensim*/**/configureOpenSim.m');
             end
         end
         if numel(scripts) > 1

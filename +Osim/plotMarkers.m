@@ -1,14 +1,8 @@
-function [] = plotMarkers(FileName, MakeVid)
+function [] = plotMarkers(FileName)
 
 
 %% Settings
 dbstop if error;
-
-if exist('MakeVid', 'var') == 0
-    MakeVid = 0;
-end
-
-
 close all;
 
 %% Load TRC file
