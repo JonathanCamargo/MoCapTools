@@ -19,17 +19,17 @@ function trcTable = readTRC(file)
     markers = strsplit(l, '\t');
     data = dlmread(file, '\t', 5, 0);
     
-    if sum(data(:,end)) == 0 % delete last column of data if empty
-        data(:,end) = [];
-    end
-    
-    if sum(data(1, :)) == 0
-        data(1, :) = [];
-    end
-    
-    if isempty(markers{end}) % delete last column of marker names if empty
-        markers(end) = []; 
-    end
+%     if sum(data(:,end)) == 0 % delete last column of data if empty
+%         data(:,end) = [];
+%     end
+%     
+%     if sum(data(1, :)) == 0
+%         data(1, :) = [];
+%     end
+%     
+%     if isempty(markers{end}) % delete last column of marker names if empty
+%         markers(end) = []; 
+%     end
     
     % get the subject ID
     % this will return some garbage if there is no subject id, but it won't
