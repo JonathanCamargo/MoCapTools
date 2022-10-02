@@ -4,6 +4,8 @@ function highErrorTable = calculateHighErrors(errorTable, threshold)
 % causing that error. The information is returned in a table
 % highErrorTable. The default value of threshold is 0.06. errorTable can be
 % the second output from Osim.IK.
+% highErrorTable = Osim.calculateHighErrors(errorTable, threshold);
+
     
     narginchk(1, 2);
     if ~exist('threshold', 'var')
