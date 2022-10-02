@@ -1,7 +1,11 @@
 !synclient HorizEdgeScroll=0 HorizTwoFingerScroll=0
 clc; clear; close all;
 
-fprintf('Installing MocapTools...\n');
+fprintf('Installing MoCapTools...\n');
+
+currentfiles=dir();
+currentfiles={currentfiles(:).name};
+assert(any(contains(currentfiles,'+Vicon')),'You must run install.m from MoCapTools final location. Aborting installation.');
 
 %% Add the paths as needed
 addpath(genpath('extlib'));
@@ -15,12 +19,12 @@ catch
     try
         fprintf('Adding OpenSim libraries to path\n');
         osimPath=fullfile('C:/Users/', getenv('username'), '/Documents/OpenSim/*/Code/Matlab');
-        scripts=matchFiles(osimPath, 'configureOpenSim.m');
+        scripts=matchfiles(osimPath, 'configureOpenSim.m');
         if isempty(scripts)
             fprintf('OpenSim scripts not found in %s\nSearching in %s\n', osimPath, fullfile('C:\OpenSim*\'));
-            scripts = matchFiles('C:/Opensim*/**/configureOpenSim.m');
+            scripts = matchfiles('C:/Opensim*/**/configureOpenSim.m');
             if isempty(scripts)
-                resourcesZip = matchFiles('C:/OpenSim*/Resources.zip');
+                resourcesZip = matchfiles('C:/OpenSim*/Resources.zip');
                 if isempty(resourcesZip)
                     error('Could not find script configureOpenSim.m');
                 end
@@ -28,7 +32,7 @@ catch
                 fprintf('Unzipping %s\n', resourcesZip);
                 resources = fullfile(fileparts(resourcesZip), 'Resources');
                 unzip(resourcesZip, resources);
-                scripts = matchFiles('C:/Opensim*/**/configureOpenSim.m');
+                scripts = matchfiles('C:/Opensim*/**/configureOpenSim.m');
             end
         end
         if numel(scripts) > 1
@@ -41,7 +45,7 @@ catch
         if isequal(e.identifier, 'MATLAB:FileIO:InvalidFid')
             warning('You may need to run install() as admin.');
         end
-        error('Could not install sf_pre. Is OpenSim installed?');
+        error('Could not verify OpenSim functionality. Is OpenSim installed?');
     end
 end
 

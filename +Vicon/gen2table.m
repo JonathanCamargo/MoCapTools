@@ -1,6 +1,5 @@
 function data = gen2table(file)
-% function to take a generalized vicon output file and convert it to a table
-
+%% function to take a generalized vicon output file and convert it to a table
 
     try
         restrictedChars = [' ', ':', '#', '.']; %chars to remove from header names

@@ -31,21 +31,34 @@ function [markerData,err] = SplineFill(markerData, markerToFill, t0, t1,varargin
     y = x{framesToKeep,2:end};
     t = t(framesToKeep);
     
-    a=interp1(t,y,(t0:t1),'pchip');    
+    a=interp1(t,y,header(t0_idx:t1_idx),'pchip');    
     
     %Safeguard do not spline fill if there is a sudden jump from t0 to t1    
     erForward=inf; erBackward=inf;
     locs=t<t0;
     if sum(locs)>3  
-        b=interp1(t(locs),y(locs,:),t1,'pchip');
+        b=interp1(t(locs),y(locs,:),t1,'linear','extrap');
         erForward=norm((a(end,:)-b),2);
+        %{
+        Topics.plot(markerData,markerToFill); hold on;
+        plot(t0:t1,a(:,1));plot(t0:t1,a(:,2));plot(t0:t1,a(:,3));
+        plot(t1,b(1),'bx'); plot(t1,b(2),'rx'); plot(t1,b(3),'yx');        
+        %}
     else
         locs=t>t1;
         if sum(locs)>3  
-            b=interp1(t(locs),y(locs,:),t0,'pchip');
+            b=interp1(t(locs),y(locs,:),t0,'linear','extrap');
             erBackward=norm((a(end,:)-b),2);
+            %{
+            Topics.plot(markerData,markerToFill); hold on;
+            plot(t0,b(1),'bx'); plot(t0,b(2),'rx'); plot(t0,b(3),'gx');     
+            %}
         end
     end
+    
+    
+    
+    %%
     
     if (erForward<MAXERROR) || (erBackward<MAXERROR)
         err=false;

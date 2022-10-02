@@ -8,8 +8,8 @@ function errorTable = calculateMarkerErrors(trcTable, stoTable)
     startTime = max(trcTable.Header(1), stoTable.Header(1));
     endTime = min(trcTable.Header(end), stoTable.Header(end));
     labels = intersect(stoTable.Properties.VariableNames, trcTable.Properties.VariableNames, 'stable');
-    trcTable = cut(trcTable, startTime, endTime);
-    stoTable = cut(stoTable, startTime, endTime);
+    trcTable = Topics.cut(trcTable, startTime, endTime);
+    stoTable = Topics.cut(stoTable, startTime, endTime);
     trcTable = trcTable(:, labels);
     stoTable = stoTable(:, labels);
     % subtract the two tables
@@ -19,14 +19,4 @@ function errorTable = calculateMarkerErrors(trcTable, stoTable)
     % set the variable names
     errorTable.Properties.VariableNames = cellfun(@(x) {strrep(x, '_x', '')}, labels(2:3:end));
     errorTable = [stoTable(:, 1),  errorTable]; % include Header again
-end
-
-function out=cut(atable,initial_time,final_time)
-%Extract a table by Header time interval
-idx=(atable.Header>=initial_time)&(atable.Header<=final_time);
-data=atable;
-out=data(idx,:);
-if isempty(out)
-    warning('Interval is empty');
-end
 end

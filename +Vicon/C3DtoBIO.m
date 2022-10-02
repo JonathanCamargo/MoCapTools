@@ -20,17 +20,19 @@ function [emg, gon] = C3DtoBIO(c3dFile)
     biom2Idx = find(strcmp(channels, 'Voltage_11'));
     biom2Idx = biom2Idx:(biom2Idx+7);
     nRows = btkGetAnalogFrameNumber(c3dHandle);
-    t0 = btkGetFirstFrame(c3dHandle);
-    times = ((1:nRows) - 2 + t0)' / btkGetAnalogFrequency(c3dHandle);
+    % Assume that frist frame (usually frame1) is equivalent to time t=0
+    t0 = (btkGetFirstFrame(c3dHandle)-1)/btkGetPointFrequency(c3dHandle);    
+    times = t0+(((1:nRows) - 1 )' / btkGetAnalogFrequency(c3dHandle));
     times = array2table(times);
     times.Properties.VariableNames = {'Header'};
+    
+    warning('Biometrics channels are hardcoded for SF2018 experiment')
+    
     gonIDs = {'GON', 'EMG', 'EMG', 'EMG', 'GON', 'GON', 'EMG', 'EMG'};
     emgIDs = {'EMG', 'EMG', 'EMG', 'GON', 'GON', 'EMG', 'EMG', 'EMG'};
     ids = [emgIDs, gonIDs];
-    
     gonHeads = {'knee_sagittal', 'bicepsfemoris', 'semitendinosus', 'gracilis', 'hip_sagittal', 'hip_frontal', 'gluteusmedius', 'rightexternaloblique'};
-
-  emgHeads = {'gastrocmed', 'tibialisanterior', 'soleus', 'ankle_sagittal', 'ankle_frontal', 'vastusmedialis', 'vastuslateralis', 'rectusfemoris'};
+    emgHeads = {'gastrocmed', 'tibialisanterior', 'soleus', 'ankle_sagittal', 'ankle_frontal', 'vastusmedialis', 'vastuslateralis', 'rectusfemoris'};
     labels = [emgHeads, gonHeads];
     tab = struct2table(analogData);
     if emgIdx == 1

@@ -1,9 +1,9 @@
 function newSignal = Filter(signal, f0)
-% Vicon.Filter filters the columns of a signal in the same manner that
-% Vicon does, with a 4th order, zero lag, butterworth filter. The cutoff
-% frequency should be supplied in radians per sample of the signal, divided
-% by pi, in the same manner as the MATLAB function butter(). This can be
-% calculated as (cutoff frequency)/(sampling frequency / 2).
+% Vicon.Filter filters a signal in the same manner that Vicon does, with a
+% 4th order, zero lag, butterworth filter. The cutoff frequency should be
+% supplied in radians per sample of the signal, divided by pi, in the same
+% manner as the MATLAB function butter(). This can be calculated as
+% (cutoff frequency)/(sampling frequency / 2).
 % 
 % [newSignal] = Vicon.Filter(signal, cutoffFrequency)
 % Vicon.Filter will filter each column of signal independently.

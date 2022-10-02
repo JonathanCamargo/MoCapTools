@@ -34,19 +34,19 @@ function trcTable = readTRC(file)
     % get the subject ID
     % this will return some garbage if there is no subject id, but it won't
     % mess up the file
-    subjectID = strtok(markers{3}, ':'); 
+%     subjectID = strtok(markers{3}, ':'); 
     % remove the subject ID
     % if there was no subject ID to start with, strrep will not find any
     % matches for [subjectID ':'] and won't replace anything
-    markers = strrep(markers, [subjectID ':'], '');
+%     markers = strrep(markers, [subjectID ':'], '');
+    markers = markers(~cellfun('isempty',markers));
     labels = markers(3:end);
     labels = labels(:);
     out = array2table(data(:,2:end));
     
     colNames = compose('%s_%c', string(labels), 'xyz')';
-    
     varNames = [{'Time'}, colNames(:)'];
-    
+    out(:,length(varNames)+1:end) = []; % delete unnamed markers
     out.Properties.VariableNames = varNames;
     
 	trcTable=out;

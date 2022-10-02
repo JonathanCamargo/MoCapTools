@@ -4,8 +4,7 @@ function markerStruct = table2markers(markerTable)
 % same format as the output of Vicon.ExtractMarkers.
 % 
 % markerStruct = table2markers(markerTable)
-
-    FS=200; %This should be a parameter
+    
     assert(istable(markerTable), 'Input must be a table.');
     data = markerTable.Variables;
     labels = markerTable.Properties.VariableNames;
@@ -26,7 +25,16 @@ function markerStruct = table2markers(markerTable)
 		error('Table can not be generated, number of channels in the table does not match with 3d coordinate system');
     end
     markerStruct = struct();
-    for idx = 1:3:size(data, 2)
-        markerStruct.(strrep(labels{idx}, '_x', '')) = array2table([round(markerTable.Header*FS+1) data(:, idx:idx+2)],'VariableNames',{'Header','x','y','z'});    
+    
+    header=markerTable.Header;
+    if all(isinteger(header)) %User has header column as frame indices
+        FS=200; %Default frame rate
+        for idx = 1:3:size(data, 2)
+            markerStruct.(strrep(labels{idx}, '_x', '')) = array2table([round(header*FS+1) data(:, idx:idx+2)],'VariableNames',{'Header','x','y','z'});
+        end
+    else
+        for idx = 1:3:size(data, 2)
+            markerStruct.(strrep(labels{idx}, '_x', '')) = array2table([header data(:, idx:idx+2)],'VariableNames',{'Header','x','y','z'});
+        end        
     end
 end

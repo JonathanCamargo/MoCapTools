@@ -4,16 +4,22 @@ function markerTable = markers2table(markerStruct)
 % table will be in the same format as the output of TRC2table.
 % 
 % markerTable = markers2table(markerStruct)
-
-    FS=200;
+    
     assert(isstruct(markerStruct), 'Input must be a struct.');
     data = structfun(@(x) {x{:,2:end}}, markerStruct);
     data = [data{:}];
     
     markerNames=fieldnames(markerStruct);
     
-    frame = markerStruct.(markerNames{1}).Header;
-    time = (frame-1)/FS;
+    header = markerStruct.(markerNames{1}).Header;
+    
+    if all(isinteger(header)) %User has header column as frame indices
+        FS=200; %Default sampling rate
+        time = (frame-1)/FS;
+    else
+        time=header;        
+    end    
+    
     data = [time, data];
     
     labels = fieldnames(markerStruct);
