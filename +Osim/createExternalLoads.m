@@ -1,45 +1,18 @@
-function extLoadsFileName = createExternalLoads(devices, sides, extLoadsFileName,varargin)
-% extLoadsFileName = createExternalLoads(devices, sides, extLoadsFileName)
-% 
+function extLoadsFileName = createExternalLoads(devices, sides, extLoadsFileName)
 % createExternalLoads will generate an external loads xml template file for
 % OpenSim that has information about which force plates apply forces to
-% which feet. Devices should be a cell array of each of the force plate
-% names, and sides should be a character vector containing 'r' and 'l'
-% indicating whether the device corresponding to that index applies a force
-% to the left or right foot. extLoadsFileName is an optional character
-% vector indicating the filename that the xml file should be written to. If
-% if it is not supplied, the external loads file will be written to a
-% random file in the temporary folder. In either case, a path to the xml
-% file will be returned. 
+% which feet. 
+% extLoadsFileName = createExternalLoads(devices, sides, extLoadsFileName);
+% devices should be a cell array of each of the force plate names. 
+% sides should be a character vector containing 'r' and 'l' indicating
+% whether the device corresponding to that index applies a force to the
+% left or right foot. 
+% extLoadsFileName is an optional character vector indicating the filename
+% that the xml file should be written to. If if it is not supplied, the
+% external loads file will be written to a random file in the temporary
+% folder. In either case, a path to the xml file will be returned. 
 % 
-% e.g. createExternalLoads({'Left_Force', 'Right_Force'}, 'lr', 'ExternalLoads.xml')
-%
-%
-% Optional Name-Value pairs:
-%
-% 'RightBody': name of the rigid body to attatch the right side force
-% 'LeftBody': name of the rigid body to attatch the Left side force
-%
-
-p=inputParser();
-p.addParameter('RightBody',[],@ischar);
-p.addParameter('LeftBody',[],@ischar);
-
-if (nargin>3 && nargin<7)
-    varargin=[extLoadsFileName; varargin(:)];
-    clear extLoadsFileName;
-end
-p.parse(varargin{:});
-
-RightBody=p.Results.RightBody;
-LeftBody=p.Results.LeftBody;
-
-if isempty(RightBody)
-    RightBody='calcn_r';
-end
-if isempty(LeftBody)
-    LeftBody='calcn_l';
-end
+% Ex. createExternalLoads({'Left_Force', 'Right_Force'}, 'lr', 'ExternalLoads.xml')
 
 %% create new external loads file
 if ~exist('extLoadsFileName', 'var')
@@ -79,16 +52,9 @@ xmlwrite(extLoadsFileName, dom);
     % createExternalForce creates an element for an external force with the
     % name given in device, that acts on the side given by side
     function extForce = createExternalForce(device, side)
-        switch side
-            case 'l'
-                body=LeftBody;
-            case 'r'
-                body=RightBody;           
-        end
-            
         extForce = dom.createElement('ExternalForce');
         extForce.setAttribute('name', [device '_extForce']);
-        addChild(extForce, 'applied_to_body', body);
+        addChild(extForce, 'applied_to_body', ['calcn_' side]);
         addChild(extForce, 'force_expressed_in_body', 'ground');
         addChild(extForce, 'point_expressed_in_body', 'ground');
         addChild(extForce, 'force_identifier', [device '_v']);
