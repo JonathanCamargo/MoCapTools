@@ -1,58 +1,3 @@
-<<<<<<< HEAD
-function trcTable = readTRC(file)
-% Takes a TRC file and removes the subject ID from the marker names if
-% present, replaces any gaps with NaN, and exports the new data to a table.
-% Usage: TRCTABLE = readTRC(FILE), where:
-% FILE is the name of the .trc file to be processed, including a relative
-% or absolute path (ex. '..\Data\stair\VIC\Stair_1_R_01.trc').
-% TRC_TABLE is a table containing all the data stored in the original TRC
-% file. 
-    
-    narginchk(1, 1);
-    assert(ischar(file) && endsWith(lower(file), '.trc'), 'This is not a TRC file (*.trc).');
-    % Import data from file
-    fh = fopen(file);
-    fgetl(fh);
-    fgetl(fh);
-    fgetl(fh);
-    l = fgetl(fh);
-    fclose(fh);
-    markers = strsplit(l, '\t');
-    data = dlmread(file, '\t', 5, 0);
-    
-    if sum(data(:,end)) == 0 % delete last column of data if empty
-        data(:,end) = [];
-    end
-    
-    if sum(data(1, :)) == 0
-        data(1, :) = [];
-    end
-    
-    if isempty(markers{end}) % delete last column of marker names if empty
-        markers(end) = []; 
-    end
-    
-    % get the subject ID
-    % this will return some garbage if there is no subject id, but it won't
-    % mess up the file
-%     subjectID = strtok(markers{3}, ':'); 
-    % remove the subject ID
-    % if there was no subject ID to start with, strrep will not find any
-    % matches for [subjectID ':'] and won't replace anything
-%     markers = strrep(markers, [subjectID ':'], '');
-    markers = markers(~cellfun('isempty',markers));
-    labels = markers(3:end);
-    labels = labels(:);
-    out = array2table(data(:,2:end));
-    
-    colNames = compose('%s_%c', string(labels), 'xyz')';
-    varNames = [{'Time'}, colNames(:)'];
-    out(:,length(varNames)+1:end) = []; % delete unnamed markers
-    out.Properties.VariableNames = varNames;
-    
-	trcTable=out;
-end
-=======
 function trcTable = readTRC(file)
 % Takes a TRC file and removes the subject ID from the marker names if
 % present, replaces any gaps with NaN, and exports the new data to a table.
@@ -100,10 +45,9 @@ function trcTable = readTRC(file)
     
     colNames = compose('%s_%c', string(labels), 'xyz')';
     
-    varNames = [{'Time'}, colNames(:)'];
+    varNames = [{'Header'}, colNames(:)'];
     
     out.Properties.VariableNames = varNames;
     
 	trcTable=out;
 end
->>>>>>> 24f5088f525711da84836f7b08fcef79826aedb4
